@@ -35,6 +35,7 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.postgresql:postgresql:42.7.5")
+    implementation("jakarta.validation:jakarta.validation-api:3.1.1")
 }
 
 tasks.withType<Test> {
