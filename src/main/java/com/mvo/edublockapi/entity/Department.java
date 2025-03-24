@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "department")
 @Data
@@ -14,7 +12,7 @@ public class Department {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private UUID id;
+    private Long id;
 
     @NotNull
     @Column(name = "name")

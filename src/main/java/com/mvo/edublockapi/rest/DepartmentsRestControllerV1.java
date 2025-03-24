@@ -14,7 +14,7 @@ public class DepartmentsRestControllerV1 {
     private final DepartmentRepository departmentRepository;
 
     @GetMapping("{id}")
-    public Department findDepartmentById(@PathVariable UUID id) {
+    public Department findDepartmentById(@PathVariable Long id) {
         return departmentRepository.findDepartmentById(id);
     }
 

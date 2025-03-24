@@ -5,7 +5,6 @@ import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "teacher")
@@ -14,7 +13,7 @@ public class Teacher {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private UUID id;
+    private Long id;
 
     @NotNull
     @Column(name = "name")

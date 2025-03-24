@@ -4,10 +4,7 @@ import com.mvo.edublockapi.entity.Department;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-import java.util.UUID;
-
-public interface DepartmentRepository extends JpaRepository<Department, UUID> {
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, value = "department with headOfDepartment")
-    Department findDepartmentById(UUID id);
+    Department findDepartmentById(Long id);
 }
