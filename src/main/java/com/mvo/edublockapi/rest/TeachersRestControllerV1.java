@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/teachers")
-public class TeachersRestController {
+public class TeachersRestControllerV1 {
 }

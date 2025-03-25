@@ -4,14 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "teacher")
 @Data
 public class Teacher {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -20,7 +20,7 @@ public class Teacher {
     private String name;
 
     @OneToMany(mappedBy = "teacher")
-    private List<Course> courses;
+    private Set<Course> courses;
 
     @OneToOne(mappedBy = "headOfDepartment")
     private Department department;

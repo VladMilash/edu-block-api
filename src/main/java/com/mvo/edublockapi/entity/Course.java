@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "course")
@@ -12,7 +12,7 @@ import java.util.List;
 @NamedEntityGraph(name = "course with students", attributeNodes = @NamedAttributeNode("students"))
 public class Course {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -29,5 +29,5 @@ public class Course {
         joinColumns = @JoinColumn(name = "course_id"),
         inverseJoinColumns = @JoinColumn(name = "student_id")
     )
-    private List<Student> students;
+    private Set<Student> students;
 }
