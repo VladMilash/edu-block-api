@@ -1,7 +1,7 @@
 package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.StudentDTO;
-import com.mvo.edublockapi.dto.StudentRegistrationDTO;
+import com.mvo.edublockapi.dto.StudentTransientDTO;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.mapper.StudentMapper;
 import com.mvo.edublockapi.repository.StudentRepository;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +20,8 @@ public class StudentRegistrationImpl implements StudentService {
     private final StudentMapper studentMapper;
 
     @Override
-    public StudentDTO save(StudentRegistrationDTO studentRegistrationDTO) {
-        Student transientStudent = studentMapper.fromStudentRegistrationDTO(studentRegistrationDTO);
+    public StudentDTO save(StudentTransientDTO studentTransientDTO) {
+        Student transientStudent = studentMapper.fromStudentRegistrationDTO(studentTransientDTO);
         Student persistStudent = studentRepository.save(transientStudent);
         persistStudent.setCourses(new HashSet<>());
         return studentMapper.map(persistStudent);
@@ -32,5 +33,24 @@ public class StudentRegistrationImpl implements StudentService {
             .stream()
             .map(studentMapper::map)
             .toList();
+    }
+
+    @Override
+    public StudentDTO getById(Long id) {
+        return studentRepository.findById(id)
+            .map(studentMapper::map)
+            .orElseThrow(NoSuchElementException::new);
+    }
+
+    @Override
+    public StudentDTO update(Long id, StudentTransientDTO studentTransientDTO) {
+        Student student = studentRepository.findById(id)
+            .orElseThrow(NoSuchElementException::new);
+
+        student.setName(studentTransientDTO.name());
+        student.setEmail(studentTransientDTO.email());
+
+        Student updatdedStudent = studentRepository.save(student);
+        return studentMapper.map(updatdedStudent);
     }
 }
