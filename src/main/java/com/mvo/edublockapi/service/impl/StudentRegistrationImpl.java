@@ -2,7 +2,7 @@ package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.StudentDTO;
-import com.mvo.edublockapi.dto.StudentTransientDTO;
+import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.StudentMapper;
@@ -25,7 +25,7 @@ public class StudentRegistrationImpl implements StudentService {
     @Override
     public StudentDTO save(StudentTransientDTO studentTransientDTO) {
         log.info("Creating student with name: {}, and email: {}", studentTransientDTO.name(), studentTransientDTO.email());
-        Student transientStudent = studentMapper.fromStudentRegistrationDTO(studentTransientDTO);
+        Student transientStudent = studentMapper.fromStudentTransientDTO(studentTransientDTO);
         Student persistStudent = studentRepository.save(transientStudent);
         log.info("Student successfully created with id: {}", persistStudent.getId());
         persistStudent.setCourses(new HashSet<>());

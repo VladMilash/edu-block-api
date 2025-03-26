@@ -1,7 +1,7 @@
 package com.mvo.edublockapi.mapper;
 
 import com.mvo.edublockapi.dto.StudentDTO;
-import com.mvo.edublockapi.dto.StudentTransientDTO;
+import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.entity.Student;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -12,7 +12,7 @@ public interface StudentMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "courses", ignore = true)
-    Student fromStudentRegistrationDTO(StudentTransientDTO studentTransientDTO);
+    Student fromStudentTransientDTO(StudentTransientDTO studentTransientDTO);
 
     StudentDTO map(Student student);
 

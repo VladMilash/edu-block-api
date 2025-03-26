@@ -2,7 +2,7 @@ package com.mvo.edublockapi.service;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.StudentDTO;
-import com.mvo.edublockapi.dto.StudentTransientDTO;
+import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 
 import java.util.List;
 

@@ -5,8 +5,6 @@ import com.mvo.edublockapi.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/departments/")

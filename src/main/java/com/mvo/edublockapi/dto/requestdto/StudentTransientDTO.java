@@ -1,4 +1,4 @@
-package com.mvo.edublockapi.dto;
+package com.mvo.edublockapi.dto.requestdto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
