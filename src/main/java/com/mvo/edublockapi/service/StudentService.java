@@ -1,5 +1,6 @@
 package com.mvo.edublockapi.service;
 
+import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.StudentDTO;
 import com.mvo.edublockapi.dto.StudentTransientDTO;
 
@@ -10,4 +11,5 @@ public interface StudentService {
     List<StudentDTO> getAll();
     StudentDTO getById(Long id);
     StudentDTO update(Long id, StudentTransientDTO studentTransientDTO);
+    DeleteResponseDTO delete(Long id);
 }

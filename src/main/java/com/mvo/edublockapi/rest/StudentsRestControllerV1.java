@@ -1,12 +1,17 @@
 package com.mvo.edublockapi.rest;
 
+import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.StudentDTO;
 import com.mvo.edublockapi.dto.StudentTransientDTO;
 import com.mvo.edublockapi.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,5 +37,10 @@ public class StudentsRestControllerV1 {
     @PutMapping("{id}")
     public StudentDTO update(@PathVariable Long id, @RequestBody StudentTransientDTO studentTransientDTO) {
         return service.update(id, studentTransientDTO);
+    }
+
+    @DeleteMapping("{id}")
+    public DeleteResponseDTO delete(@PathVariable Long id) {
+        return service.delete(id);
     }
 }
