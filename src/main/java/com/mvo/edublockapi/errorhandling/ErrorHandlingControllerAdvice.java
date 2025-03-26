@@ -8,17 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Slf4j
 @ControllerAdvice
 public class ErrorHandlingControllerAdvice {
 
     @ExceptionHandler(NotFoundEntityException.class)
     public ResponseEntity<ErrorResponse> onNotFoundEntityException(NotFoundEntityException e, HttpServletRequest request) {
         String path = request.getRequestURI();
+        log.info("Exception from path: {} caught", path);
         ErrorResponse errorResponse = new ErrorResponse(
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()),
             404,
@@ -26,6 +26,7 @@ public class ErrorHandlingControllerAdvice {
             e.getMessage(),
             path
         );
+        log.info("Sending errorResponse");
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(errorResponse);
     }
