@@ -52,8 +52,7 @@ public class StudentRegistrationImpl implements StudentService {
             .orElseThrow(() -> {
                 log.error("Student with id {} not found", id);
                 return new NotFoundEntityException(
-                    "Student with ID " + id + " not found",
-                    "/api/v1/students/" + id
+                    "Student with ID " + id + " not found"
                 );
             });
     }
