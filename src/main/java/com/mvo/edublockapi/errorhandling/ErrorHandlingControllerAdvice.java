@@ -18,10 +18,7 @@ public class ErrorHandlingControllerAdvice {
 
     @ExceptionHandler(NotFoundEntityException.class)
     public ResponseEntity<ErrorResponse> onNotFoundEntityException(NotFoundEntityException e, HttpServletRequest request) {
-        String fullPath = request.getRequestURI();
-        String contestPath = request.getContextPath();
-        String path = fullPath.substring(contestPath.length());
-
+        String path = request.getRequestURI();
         ErrorResponse errorResponse = new ErrorResponse(
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()),
             404,
