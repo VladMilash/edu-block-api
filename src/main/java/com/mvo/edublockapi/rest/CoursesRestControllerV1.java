@@ -4,10 +4,9 @@ import com.mvo.edublockapi.dto.CourseDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,5 +17,10 @@ public class CoursesRestControllerV1 {
     @PostMapping
     public CourseDTO save(@RequestBody CourseTransientDTO courseTransientDTO) {
         return courseService.save(courseTransientDTO);
+    }
+
+    @GetMapping
+    public List<CourseDTO> getAll() {
+        return courseService.getAll();
     }
 }

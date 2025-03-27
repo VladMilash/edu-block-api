@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +24,13 @@ public class CourseServiceImpl implements CourseService {
         Course persistCourse = courseRepository.save(transientCourse);
         persistCourse.setStudents(new HashSet<>());
         return courseMapper.map(persistCourse);
+    }
+
+    @Override
+    public List<CourseDTO> getAll() {
+        return courseRepository.findAll()
+            .stream()
+            .map(courseMapper::map)
+            .toList();
     }
 }
