@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "department")
 @Data
-@NamedEntityGraph(name = "department with headOfDepartment", attributeNodes = @NamedAttributeNode("headOfDepartment"))
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +19,7 @@ public class Department {
     @Column(name = "name")
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "head_of_department_id")
     private Teacher headOfDepartment;
 

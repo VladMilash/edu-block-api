@@ -3,7 +3,10 @@ package com.mvo.edublockapi.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -22,6 +25,8 @@ public class Teacher {
     @OneToMany(mappedBy = "teacher")
     private Set<Course> courses;
 
-    @OneToOne(mappedBy = "headOfDepartment")
+
+    @OneToOne(mappedBy = "headOfDepartment", fetch = FetchType.LAZY)
     private Department department;
+
 }

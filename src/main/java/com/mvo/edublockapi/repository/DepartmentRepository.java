@@ -1,6 +1,5 @@
 package com.mvo.edublockapi.repository;
 
-import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Department;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

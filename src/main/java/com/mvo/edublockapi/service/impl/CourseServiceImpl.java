@@ -1,6 +1,9 @@
 package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.CourseDTO;
+import com.mvo.edublockapi.dto.ResponseGetAllCourses;
+import com.mvo.edublockapi.dto.StudentShortDTO;
+import com.mvo.edublockapi.dto.TeacherShortDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.mapper.CourseMapper;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +31,20 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDTO> getAll() {
-        return courseRepository.findAll()
-            .stream()
-            .map(courseMapper::map)
-            .toList();
+    public List<ResponseGetAllCourses> getAll() {
+        List<Course> courses = courseRepository.findAll();
+        return courses.stream()
+            .map(course ->
+                new ResponseGetAllCourses(
+                    course.getId(),
+                    course.getTitle(),
+                    course.getTeacher() != null
+                        ? new TeacherShortDTO(course.getTeacher().getId(), course.getTeacher().getName())
+                        : null,
+                    course.getStudents()
+                        .stream()
+                        .map(student -> new StudentShortDTO(student.getId(), student.getName())
+                        ).collect(Collectors.toSet())
+                )).collect(Collectors.toList());
     }
 }
