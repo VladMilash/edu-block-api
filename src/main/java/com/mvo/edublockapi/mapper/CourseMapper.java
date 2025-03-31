@@ -1,12 +1,11 @@
 package com.mvo.edublockapi.mapper;
 
 import com.mvo.edublockapi.dto.CourseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCourses;
+import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.StudentShortDTO;
 import com.mvo.edublockapi.dto.TeacherShortDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
-import com.mvo.edublockapi.entity.Teacher;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,8 +25,8 @@ public interface CourseMapper {
     @InheritInverseConfiguration
     CourseDTO map(Course course);
 
-    default ResponseGetCourses toResponseGetCourses(Course course) {
-        return new ResponseGetCourses(
+    default ResponseGetCoursesDTO toResponseGetCourses(Course course) {
+        return new ResponseGetCoursesDTO(
             course.getId(),
             course.getTitle(),
             course.getTeacher() != null

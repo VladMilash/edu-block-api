@@ -1,8 +1,8 @@
 package com.mvo.edublockapi.service.impl;
 
-import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.StudentDTO;
+import com.mvo.edublockapi.dto.*;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
+import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.StudentMapper;
@@ -14,11 +14,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StudentRegistrationImpl implements StudentService {
+public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
 
@@ -33,16 +34,32 @@ public class StudentRegistrationImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDTO> getAll() {
+    public List<ResponseGetStudentDTO> getAll() {
         log.info("Getting all students");
-        return studentRepository.findAll()
-            .stream()
-            .map(studentMapper::map)
-            .toList();
+        List<Student> students = studentRepository.findAll();
+        return students.stream()
+            .map(student ->
+                new ResponseGetStudentDTO(
+                    student.getId(),
+                    student.getName(),
+                    student.getEmail(),
+                    student.getCourses()
+                        .stream()
+                        .map(course ->
+                            new CourseShortDTO(
+                                course.getId(),
+                                course.getTitle(),
+                                new TeacherShortDTO(
+                                    course.getTeacher().getId(),
+                                    course.getTeacher().getName())
+                            )
+                        ).collect(Collectors.toSet())
+                )
+            ).toList();
     }
 
     @Override
-    public StudentDTO getById(Long id) {
+    public ResponseGetStudentDTO getById(Long id) {
         log.info("Getting student by id: {}", id);
         return studentRepository.findById(id)
             .map(student -> {

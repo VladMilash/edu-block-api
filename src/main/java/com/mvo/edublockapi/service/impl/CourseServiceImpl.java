@@ -1,9 +1,7 @@
 package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.CourseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCourses;
-import com.mvo.edublockapi.dto.StudentShortDTO;
-import com.mvo.edublockapi.dto.TeacherShortDTO;
+import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
@@ -33,7 +31,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<ResponseGetCourses> getAll() {
+    public List<ResponseGetCoursesDTO> getAll() {
         List<Course> courses = courseRepository.findAll();
         return courses
             .stream()
@@ -42,7 +40,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public ResponseGetCourses getById(Long id) {
+    public ResponseGetCoursesDTO getById(Long id) {
         return courseRepository.findById(id)
             .map(courseMapper::toResponseGetCourses)
             .orElseThrow(() -> {

@@ -1,6 +1,7 @@
 package com.mvo.edublockapi.rest;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
+import com.mvo.edublockapi.dto.ResponseGetStudentDTO;
 import com.mvo.edublockapi.dto.StudentDTO;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.service.StudentService;
@@ -21,12 +22,12 @@ public class StudentsRestControllerV1 {
     }
 
     @GetMapping
-    public List<StudentDTO> getAll() {
+    public List<ResponseGetStudentDTO> getAll() {
         return service.getAll();
     }
 
     @GetMapping("{id}")
-    public StudentDTO getById(@PathVariable Long id) {
+    public ResponseGetStudentDTO getById(@PathVariable Long id) {
         return service.getById(id);
     }
 

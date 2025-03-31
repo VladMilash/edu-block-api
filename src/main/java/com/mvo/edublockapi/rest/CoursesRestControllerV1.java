@@ -1,7 +1,7 @@
 package com.mvo.edublockapi.rest;
 
 import com.mvo.edublockapi.dto.CourseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCourses;
+import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,12 @@ public class CoursesRestControllerV1 {
     }
 
     @GetMapping
-    public List<ResponseGetCourses> getAll() {
+    public List<ResponseGetCoursesDTO> getAll() {
         return courseService.getAll();
     }
 
     @GetMapping("{id}")
-    public ResponseGetCourses getById(@PathVariable long id) {
+    public ResponseGetCoursesDTO getById(@PathVariable long id) {
         return courseService.getById(id);
     }
 }

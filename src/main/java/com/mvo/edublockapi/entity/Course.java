@@ -1,9 +1,11 @@
 package com.mvo.edublockapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.Set;
 
@@ -19,11 +21,14 @@ public class Course {
     @Column(name = "title")
     private String title;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToMany()
     @JoinTable(
         name = "student_course",

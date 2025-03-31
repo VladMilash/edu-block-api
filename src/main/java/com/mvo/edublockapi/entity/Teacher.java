@@ -1,9 +1,12 @@
 package com.mvo.edublockapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,10 +25,13 @@ public class Teacher {
     @Column(name = "name")
     private String name;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "teacher")
     private Set<Course> courses;
 
-
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToOne(mappedBy = "headOfDepartment", fetch = FetchType.LAZY)
     private Department department;
 
