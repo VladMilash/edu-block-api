@@ -1,21 +1,23 @@
 package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.CourseDTO;
-import com.mvo.edublockapi.dto.ResponseGetAllCourses;
+import com.mvo.edublockapi.dto.ResponseGetCourses;
 import com.mvo.edublockapi.dto.StudentShortDTO;
 import com.mvo.edublockapi.dto.TeacherShortDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
+import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.CourseMapper;
 import com.mvo.edublockapi.repository.CourseRepository;
 import com.mvo.edublockapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
@@ -31,20 +33,21 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<ResponseGetAllCourses> getAll() {
+    public List<ResponseGetCourses> getAll() {
         List<Course> courses = courseRepository.findAll();
-        return courses.stream()
-            .map(course ->
-                new ResponseGetAllCourses(
-                    course.getId(),
-                    course.getTitle(),
-                    course.getTeacher() != null
-                        ? new TeacherShortDTO(course.getTeacher().getId(), course.getTeacher().getName())
-                        : null,
-                    course.getStudents()
-                        .stream()
-                        .map(student -> new StudentShortDTO(student.getId(), student.getName())
-                        ).collect(Collectors.toSet())
-                )).collect(Collectors.toList());
+        return courses
+            .stream()
+            .map(courseMapper::toResponseGetCourses)
+            .toList();
+    }
+
+    @Override
+    public ResponseGetCourses getById(Long id) {
+        return courseRepository.findById(id)
+            .map(courseMapper::toResponseGetCourses)
+            .orElseThrow(() -> {
+                log.error("Course with id {} not found", id);
+                return new NotFoundEntityException("Course with ID " + id + " not found");
+            });
     }
 }

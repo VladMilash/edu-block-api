@@ -21,7 +21,14 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         """)
     List<Course> findAll();
 
-    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, value = "course with students")
+    @Query("""
+        SELECT DISTINCT c FROM Course c
+        LEFT JOIN FETCH c.teacher t
+        LEFT JOIN FETCH t.department d
+        LEFT JOIN FETCH d.headOfDepartment h     
+        LEFT JOIN FETCH c.students s   
+        WHERE c.id = :id                          
+        """)
     Optional<Course> findById(Long id);
 }
 

@@ -1,9 +1,8 @@
 package com.mvo.edublockapi.rest;
 
 import com.mvo.edublockapi.dto.CourseDTO;
-import com.mvo.edublockapi.dto.ResponseGetAllCourses;
+import com.mvo.edublockapi.dto.ResponseGetCourses;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
-import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,12 @@ public class CoursesRestControllerV1 {
     }
 
     @GetMapping
-    public List<ResponseGetAllCourses> getAll() {
+    public List<ResponseGetCourses> getAll() {
         return courseService.getAll();
+    }
+
+    @GetMapping("{id}")
+    public ResponseGetCourses getById(@PathVariable long id) {
+        return courseService.getById(id);
     }
 }
