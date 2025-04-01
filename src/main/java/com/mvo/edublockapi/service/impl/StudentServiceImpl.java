@@ -2,7 +2,6 @@ package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.*;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
-import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.StudentMapper;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,76 +22,60 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
 
     @Override
-    public StudentDTO save(StudentTransientDTO studentTransientDTO) {
+    public ResponseGetStudentDTO save(StudentTransientDTO studentTransientDTO) {
         log.info("Creating student with name: {}, and email: {}", studentTransientDTO.name(), studentTransientDTO.email());
         Student transientStudent = studentMapper.fromStudentTransientDTO(studentTransientDTO);
         Student persistStudent = studentRepository.save(transientStudent);
         log.info("Student successfully created with id: {}", persistStudent.getId());
         persistStudent.setCourses(new HashSet<>());
-        return studentMapper.map(persistStudent);
+        return studentMapper.toResponseGetStudentDTO(persistStudent);
     }
 
     @Override
     public List<ResponseGetStudentDTO> getAll() {
         log.info("Getting all students");
         List<Student> students = studentRepository.findAll();
-        return students.stream()
-            .map(student ->
-                new ResponseGetStudentDTO(
-                    student.getId(),
-                    student.getName(),
-                    student.getEmail(),
-                    student.getCourses()
-                        .stream()
-                        .map(course ->
-                            new CourseShortDTO(
-                                course.getId(),
-                                course.getTitle(),
-                                new TeacherShortDTO(
-                                    course.getTeacher().getId(),
-                                    course.getTeacher().getName())
-                            )
-                        ).collect(Collectors.toSet())
-                )
-            ).toList();
+        return students
+            .stream()
+            .map(studentMapper::toResponseGetStudentDTO)
+            .toList();
     }
 
     @Override
     public ResponseGetStudentDTO getById(Long id) {
-        log.info("Getting student by id: {}", id);
+        Student student = getStudent(id);
+        log.info("Student with id: {} successfully found", id);
+        return studentMapper.toResponseGetStudentDTO(student);
+    }
+
+    @Override
+    public ResponseGetStudentDTO update(Long id, StudentTransientDTO studentTransientDTO) {
+        log.info("Getting student by id: {} for update", id);
+        Student student = getStudent(id);
+        log.info("Updating student with id: {}", id);
+        student.setName(studentTransientDTO.name());
+        student.setEmail(studentTransientDTO.email());
+        Student updatededStudent = studentRepository.save(student);
+        log.info("Student with id: {} successfully updated", id);
+        return studentMapper.toResponseGetStudentDTO(updatededStudent);
+    }
+
+    @Override
+    public DeleteResponseDTO delete(Long id) {
+        log.info("Getting student by id: {} for delete", id);
+        Student student = getStudent(id);
+        studentRepository.delete(student);
+        log.info("Student with id: {} successfully deleted", id);
+        return new DeleteResponseDTO("Student deleted successfully");
+    }
+
+    private Student getStudent(Long id) {
         return studentRepository.findById(id)
-            .map(student -> {
-                log.info("Student with id: {} successfully found", id);
-                return studentMapper.map(student);
-            })
             .orElseThrow(() -> {
                 log.error("Student with id {} not found", id);
                 return new NotFoundEntityException(
                     "Student with ID " + id + " not found"
                 );
             });
-    }
-
-    @Override
-    public StudentDTO update(Long id, StudentTransientDTO studentTransientDTO) {
-        log.info("Getting student by id: {} for update", id);
-        StudentDTO studentDTO = getById(id);
-        Student student = studentMapper.map(studentDTO);
-        log.info("Updating student with id: {}", id);
-        student.setName(studentTransientDTO.name());
-        student.setEmail(studentTransientDTO.email());
-        Student updatededStudent = studentRepository.save(student);
-        log.info("Student with id: {} successfully updated", id);
-        return studentMapper.map(updatededStudent);
-    }
-
-    @Override
-    public DeleteResponseDTO delete(Long id) {
-        log.info("Getting student by id: {} for delete", id);
-        StudentDTO studentDTO = getById(id);
-        Student student = studentMapper.map(studentDTO);
-        studentRepository.delete(student);
-        log.info("Student with id: {} successfully deleted", id);
-        return new DeleteResponseDTO("Student deleted successfully");
     }
 }

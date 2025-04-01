@@ -17,7 +17,7 @@ public class StudentsRestControllerV1 {
     private final StudentService service;
 
     @PostMapping
-    public StudentDTO save(@RequestBody StudentTransientDTO studentTransientDTO) {
+    public ResponseGetStudentDTO save(@RequestBody StudentTransientDTO studentTransientDTO) {
         return service.save(studentTransientDTO);
     }
 
@@ -32,7 +32,7 @@ public class StudentsRestControllerV1 {
     }
 
     @PutMapping("{id}")
-    public StudentDTO update(@PathVariable Long id, @RequestBody StudentTransientDTO studentTransientDTO) {
+    public ResponseGetStudentDTO update(@PathVariable Long id, @RequestBody StudentTransientDTO studentTransientDTO) {
         return service.update(id, studentTransientDTO);
     }
 
