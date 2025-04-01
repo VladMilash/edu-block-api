@@ -1,6 +1,6 @@
 package com.mvo.edublockapi.service.impl;
 
-import com.mvo.edublockapi.dto.CourseDTO;
+import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
@@ -23,15 +23,18 @@ public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
 
     @Override
-    public CourseDTO save(CourseTransientDTO courseTransientDTO) {
+    public ResponseGetCoursesDTO save(CourseTransientDTO courseTransientDTO) {
+        log.info("Creating course with title: {}", courseTransientDTO.title());
         Course transientCourse = courseMapper.fromCourseTransientDTO(courseTransientDTO);
         Course persistCourse = courseRepository.save(transientCourse);
+        log.info("Course successfully created with id: {}", persistCourse.getId());
         persistCourse.setStudents(new HashSet<>());
-        return courseMapper.map(persistCourse);
+        return courseMapper.toResponseGetCourses(persistCourse);
     }
 
     @Override
     public List<ResponseGetCoursesDTO> getAll() {
+        log.info("Getting all courses");
         List<Course> courses = courseRepository.findAll();
         return courses
             .stream()
@@ -41,8 +44,33 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseGetCoursesDTO getById(Long id) {
+        Course course = getCourse(id);
+        log.info("Course with id: {} successfully found", id);
+        return courseMapper.toResponseGetCourses(course);
+    }
+
+    @Override
+    public ResponseGetCoursesDTO update(Long id, CourseTransientDTO courseTransientDTO) {
+        log.info("Getting course by id: {} for update", id);
+        Course course = getCourse(id);
+        log.info("Updating course with id: {}", id);
+        course.setTitle(courseTransientDTO.title());
+        Course updatedCourse = courseRepository.save(course);
+        log.info("Course with id: {} successfully updated", id);
+        return courseMapper.toResponseGetCourses(updatedCourse);
+    }
+
+    @Override
+    public DeleteResponseDTO delete(Long id) {
+        log.info("Getting course by id: {} for delete", id);
+        Course course = getCourse(id);
+        courseRepository.delete(course);
+        log.info("Course with id: {} successfully deleted", id);
+        return new DeleteResponseDTO("Course deleted successfully");
+    }
+
+    private Course getCourse(Long id) {
         return courseRepository.findById(id)
-            .map(courseMapper::toResponseGetCourses)
             .orElseThrow(() -> {
                 log.error("Course with id {} not found", id);
                 return new NotFoundEntityException("Course with ID " + id + " not found");

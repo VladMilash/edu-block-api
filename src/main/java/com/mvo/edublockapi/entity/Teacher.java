@@ -1,7 +1,5 @@
 package com.mvo.edublockapi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;

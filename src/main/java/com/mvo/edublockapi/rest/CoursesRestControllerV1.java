@@ -1,6 +1,6 @@
 package com.mvo.edublockapi.rest;
 
-import com.mvo.edublockapi.dto.CourseDTO;
+import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.service.CourseService;
@@ -16,7 +16,7 @@ public class CoursesRestControllerV1 {
     private final CourseService courseService;
 
     @PostMapping
-    public CourseDTO save(@RequestBody CourseTransientDTO courseTransientDTO) {
+    public ResponseGetCoursesDTO save(@RequestBody CourseTransientDTO courseTransientDTO) {
         return courseService.save(courseTransientDTO);
     }
 
@@ -28,5 +28,15 @@ public class CoursesRestControllerV1 {
     @GetMapping("{id}")
     public ResponseGetCoursesDTO getById(@PathVariable long id) {
         return courseService.getById(id);
+    }
+
+    @PutMapping("{id}")
+    public ResponseGetCoursesDTO update(@PathVariable Long id, @RequestBody CourseTransientDTO courseTransientDTO) {
+        return courseService.update(id, courseTransientDTO);
+    }
+
+    @DeleteMapping("{id}")
+    public DeleteResponseDTO delete(@PathVariable Long id) {
+        return courseService.delete(id);
     }
 }

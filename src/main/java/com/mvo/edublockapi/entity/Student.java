@@ -11,27 +11,6 @@ import java.util.Set;
 @Entity
 @Table(name = "student")
 @Data
-@NamedEntityGraph(
-    name = "Student.fullGraph",
-    attributeNodes = {
-        @NamedAttributeNode(value = "courses", subgraph = "courseDetails")
-    },
-    subgraphs = {
-        @NamedSubgraph(
-            name = "courseDetails",
-            attributeNodes = {
-                @NamedAttributeNode(value = "teacher", subgraph = "teacherDetails")
-            }
-        ),
-        @NamedSubgraph(
-            name = "teacherDetails",
-            attributeNodes = {
-                @NamedAttributeNode("courses"),
-                @NamedAttributeNode("department")
-            }
-        )
-    }
-)
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
