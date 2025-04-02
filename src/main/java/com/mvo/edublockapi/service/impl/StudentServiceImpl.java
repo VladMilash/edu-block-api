@@ -47,6 +47,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseGetStudentDTO getById(Long id) {
+        log.info("Getting student by id: {}", id);
         Student student = getStudent(id);
         log.info("Student with id: {} successfully found", id);
         return studentMapper.toResponseGetStudentDTO(student);
