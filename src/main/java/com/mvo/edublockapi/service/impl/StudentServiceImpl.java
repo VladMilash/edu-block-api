@@ -81,7 +81,7 @@ public class StudentServiceImpl implements StudentService {
         student.getCourses().add(course);
         courseService.setRelationWithStudent(courseId, student);
         Student updatedStudent = studentRepository.save(student);
-        log.info("Finished setting relation for student with id: {} and course with id: {}" ,courseId,student.getId());
+        log.info("Finished setting relation for student with id: {} and course with id: {}" ,student.getId(), courseId);
         return studentMapper.toResponseGetStudentDTO(updatedStudent);
     }
 
