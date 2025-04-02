@@ -2,7 +2,6 @@ package com.mvo.edublockapi.rest;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.ResponseGetStudentDTO;
-import com.mvo.edublockapi.dto.StudentDTO;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +38,10 @@ public class StudentsRestControllerV1 {
     @DeleteMapping("{id}")
     public DeleteResponseDTO delete(@PathVariable Long id) {
         return service.delete(id);
+    }
+
+    @PostMapping("{studentId}/courses/{courseId}")
+    public ResponseGetStudentDTO setRelationWithCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
+        return service.setRelationWithCourse(studentId,courseId);
     }
 }

@@ -2,10 +2,12 @@ package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.*;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
+import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.StudentMapper;
 import com.mvo.edublockapi.repository.StudentRepository;
+import com.mvo.edublockapi.service.CourseService;
 import com.mvo.edublockapi.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -20,6 +23,7 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+    private final CourseService courseService;
 
     @Override
     public ResponseGetStudentDTO save(StudentTransientDTO studentTransientDTO) {
@@ -69,6 +73,18 @@ public class StudentServiceImpl implements StudentService {
         return new DeleteResponseDTO("Student deleted successfully");
     }
 
+    @Override
+    public ResponseGetStudentDTO setRelationWithCourse(Long studentId, Long courseId) {
+        log.info("Setting relations for student-course, with student id: {}, and course id: {}", studentId, courseId);
+        Student student = getStudent(studentId);
+        Course course = courseService.getCourseById(courseId);
+        student.getCourses().add(course);
+        courseService.setRelationWithStudent(courseId, student);
+        Student updatedStudent = studentRepository.save(student);
+        log.info("Finished setting relation for student with id: {} and course with id: {}" ,courseId,student.getId());
+        return studentMapper.toResponseGetStudentDTO(updatedStudent);
+    }
+
     private Student getStudent(Long id) {
         return studentRepository.findById(id)
             .orElseThrow(() -> {
@@ -78,4 +94,5 @@ public class StudentServiceImpl implements StudentService {
                 );
             });
     }
+
 }

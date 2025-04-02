@@ -35,9 +35,12 @@ public interface StudentMapper {
                     new CourseShortDTO(
                         course.getId(),
                         course.getTitle(),
+                        course.getTeacher() != null
+                            ?
                         new TeacherShortDTO(
                             course.getTeacher().getId(),
                             course.getTeacher().getName())
+                            : null
                     )
                 ).collect(Collectors.toSet())
         );

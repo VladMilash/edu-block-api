@@ -12,4 +12,6 @@ public interface StudentService {
     ResponseGetStudentDTO getById(Long id);
     ResponseGetStudentDTO update(Long id, StudentTransientDTO studentTransientDTO);
     DeleteResponseDTO delete(Long id);
+    ResponseGetStudentDTO setRelationWithCourse(Long studentId, Long courseId);
+
 }

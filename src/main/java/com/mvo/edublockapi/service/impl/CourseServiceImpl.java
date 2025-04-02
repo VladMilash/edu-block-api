@@ -4,6 +4,7 @@ import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
+import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.CourseMapper;
 import com.mvo.edublockapi.repository.CourseRepository;
@@ -44,7 +45,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public ResponseGetCoursesDTO getById(Long id) {
-        Course course = getCourse(id);
+        Course course = getCourseById(id);
         log.info("Course with id: {} successfully found", id);
         return courseMapper.toResponseGetCourses(course);
     }
@@ -52,7 +53,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResponseGetCoursesDTO update(Long id, CourseTransientDTO courseTransientDTO) {
         log.info("Getting course by id: {} for update", id);
-        Course course = getCourse(id);
+        Course course = getCourseById(id);
         log.info("Updating course with id: {}", id);
         course.setTitle(courseTransientDTO.title());
         Course updatedCourse = courseRepository.save(course);
@@ -63,17 +64,25 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public DeleteResponseDTO delete(Long id) {
         log.info("Getting course by id: {} for delete", id);
-        Course course = getCourse(id);
+        Course course = getCourseById(id);
         courseRepository.delete(course);
         log.info("Course with id: {} successfully deleted", id);
         return new DeleteResponseDTO("Course deleted successfully");
     }
 
-    private Course getCourse(Long id) {
+    public Course getCourseById(Long id) {
         return courseRepository.findById(id)
             .orElseThrow(() -> {
                 log.error("Course with id {} not found", id);
                 return new NotFoundEntityException("Course with ID " + id + " not found");
             });
+    }
+
+    @Override
+    public void setRelationWithStudent(Long courseId , Student student) {
+        Course course = getCourseById(courseId);
+        course.getStudents().add(student);
+        courseRepository.save(course);
+        log.info("Finished setting relation for course with id: {} and student with id: {}" ,courseId,student.getId());
     }
 }
