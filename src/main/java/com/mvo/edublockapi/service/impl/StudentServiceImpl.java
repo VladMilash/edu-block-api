@@ -81,8 +81,17 @@ public class StudentServiceImpl implements StudentService {
         student.getCourses().add(course);
         courseService.setRelationWithStudent(courseId, student);
         Student updatedStudent = studentRepository.save(student);
-        log.info("Finished setting relation for student with id: {} and course with id: {}" ,courseId,student.getId());
+        log.info("Finished setting relation for student with id: {} and course with id: {}" ,student.getId(), courseId);
         return studentMapper.toResponseGetStudentDTO(updatedStudent);
+    }
+
+    @Override
+    public Set<CourseShortDTO> getStudentCourses(Long id) {
+        log.info("Getting courses for student with id: {}", id);
+        ResponseGetStudentDTO student = getById(id);
+        log.info("Courses for student with id: {} successfully found", id);
+        return student.courses();
+
     }
 
     private Student getStudent(Long id) {

@@ -1,5 +1,6 @@
 package com.mvo.edublockapi.rest;
 
+import com.mvo.edublockapi.dto.CourseShortDTO;
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.ResponseGetStudentDTO;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,4 +46,10 @@ public class StudentsRestControllerV1 {
     public ResponseGetStudentDTO setRelationWithCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
         return service.setRelationWithCourse(studentId,courseId);
     }
+
+    @GetMapping("{id}/courses")
+    public Set<CourseShortDTO> getStudentCourses(@PathVariable Long id) {
+        return service.getStudentCourses(id);
+    }
+
 }
