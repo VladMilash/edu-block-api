@@ -20,7 +20,9 @@ public interface TeacherMapper {
             teacher.getCourses()
                 .stream()
                 .map(course -> new CourseShortDTO(course.getId(), course.getTitle(),
-                    new TeacherShortDTO(course.getTeacher().getId(), course.getTeacher().getName())))
+                    course.getTeacher() != null
+                        ? new TeacherShortDTO(course.getTeacher().getId(), course.getTeacher().getName())
+                        : null))
                 .collect(Collectors.toSet()),
             teacher.getDepartment() != null
                 ? new DepartmentShortDTO(teacher.getDepartment().getId(), teacher.getDepartment().getName())

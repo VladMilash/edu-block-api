@@ -1,6 +1,7 @@
 package com.mvo.edublockapi.rest;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
+import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
 import com.mvo.edublockapi.service.TeacherService;
@@ -39,4 +40,10 @@ public class TeachersRestControllerV1 {
     public DeleteResponseDTO delete(@PathVariable Long id) {
         return service.delete(id);
     }
+
+    @PostMapping("/{teacherId}/courses/{coursesId}")
+    public ResponseGetCoursesDTO setRelationTeacherWithCourse(@PathVariable Long teacherId, @PathVariable Long coursesId) {
+        return service.setRelationTeacherWithCourse(teacherId, coursesId);
+    }
+
 }

@@ -5,6 +5,7 @@ import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
+import com.mvo.edublockapi.entity.Teacher;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.CourseMapper;
 import com.mvo.edublockapi.repository.CourseRepository;
@@ -85,5 +86,12 @@ public class CourseServiceImpl implements CourseService {
         course.getStudents().add(student);
         courseRepository.save(course);
         log.info("Finished setting relation for course with id: {} and student with id: {}" ,courseId,student.getId());
+    }
+
+    @Override
+    public ResponseGetCoursesDTO setRelationWithTeacher(Long courseId, Teacher teacher) {
+        Course course = getCourseById(courseId);
+        course.setTeacher(teacher);
+        return courseMapper.toResponseGetCourses(courseRepository.save(course));
     }
 }

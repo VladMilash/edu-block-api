@@ -1,15 +1,18 @@
 package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
+import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.ResponseGetStudentDTO;
 import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
+import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.entity.Teacher;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.TeacherMapper;
 import com.mvo.edublockapi.repository.TeacherRepository;
+import com.mvo.edublockapi.service.CourseService;
 import com.mvo.edublockapi.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ import java.util.List;
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final TeacherMapper teacherMapper;
+    private final CourseService courseService;
 
     @Override
     public ResponseGetTeacherDTO save(TeacherTransientDTO teacherTransientDTO) {
@@ -71,6 +75,14 @@ public class TeacherServiceImpl implements TeacherService {
         teacherRepository.delete(teacher);
         log.info("Teacher with id {}: successfully deleted", id);
         return new DeleteResponseDTO("Teacher deleted successfully");
+    }
+
+    @Override
+    public ResponseGetCoursesDTO setRelationTeacherWithCourse(Long teacherId, Long courseId) {
+        Teacher teacher = getTeacher(teacherId);
+        Course course = courseService.getCourseById(courseId);
+        teacher.getCourses().add(course);
+        return courseService.setRelationWithTeacher(courseId, teacher);
 
     }
 
