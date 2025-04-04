@@ -60,9 +60,9 @@ public class StudentServiceImpl implements StudentService {
         log.info("Updating student with id: {}", id);
         student.setName(studentTransientDTO.name());
         student.setEmail(studentTransientDTO.email());
-        Student updatededStudent = studentRepository.save(student);
+        Student updatedStudent = studentRepository.save(student);
         log.info("Student with id: {} successfully updated", id);
-        return studentMapper.toResponseGetStudentDTO(updatededStudent);
+        return studentMapper.toResponseGetStudentDTO(updatedStudent);
     }
 
     @Override
@@ -96,6 +96,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private Student getStudent(Long id) {
+        log.info("Started found for student with id: {}", id);
         return studentRepository.findById(id)
             .orElseThrow(() -> {
                 log.error("Student with id {} not found", id);
@@ -104,5 +105,6 @@ public class StudentServiceImpl implements StudentService {
                 );
             });
     }
+
 
 }

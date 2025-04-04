@@ -71,6 +71,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     public Course getCourseById(Long id) {
+        log.info("Started found for course with id: {}", id);
         return courseRepository.findById(id)
             .orElseThrow(() -> {
                 log.error("Course with id {} not found", id);
