@@ -71,7 +71,7 @@ public class CourseServiceImpl implements CourseService {
         return new DeleteResponseDTO("Course deleted successfully");
     }
 
-    public Course getCourseById(Long id) {
+     public Course getCourseById(Long id) {
         log.info("Started found for course with id: {}", id);
         return courseRepository.findById(id)
             .orElseThrow(() -> {
@@ -85,13 +85,15 @@ public class CourseServiceImpl implements CourseService {
         Course course = getCourseById(courseId);
         course.getStudents().add(student);
         courseRepository.save(course);
-        log.info("Finished setting relation for course with id: {} and student with id: {}" ,courseId,student.getId());
+        log.info("Finished setting relation for course with id: {} and student with id: {}", courseId, student.getId());
     }
 
     @Override
     public ResponseGetCoursesDTO setRelationWithTeacher(Long courseId, Teacher teacher) {
         Course course = getCourseById(courseId);
         course.setTeacher(teacher);
-        return courseMapper.toResponseGetCourses(courseRepository.save(course));
+        Course uodatedCourse = courseRepository.save(course);
+        log.info("Finished setting relation for course with id: {} and teacher with id: {}", courseId, teacher.getId());
+        return courseMapper.toResponseGetCourses(uodatedCourse);
     }
 }

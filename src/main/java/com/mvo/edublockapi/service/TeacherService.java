@@ -4,6 +4,8 @@ import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
+import com.mvo.edublockapi.entity.Department;
+import com.mvo.edublockapi.entity.Teacher;
 
 import java.util.List;
 
@@ -14,4 +16,5 @@ public interface TeacherService {
     ResponseGetTeacherDTO update(Long id, TeacherTransientDTO teacherTransientDTO);
     DeleteResponseDTO delete(Long id);
     ResponseGetCoursesDTO setRelationTeacherWithCourse(Long teacherId, Long courseId);
+    Teacher getTeacher(Long id);
 }

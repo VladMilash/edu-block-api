@@ -2,12 +2,10 @@ package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
 import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
-import com.mvo.edublockapi.dto.ResponseGetStudentDTO;
 import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
-import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
 import com.mvo.edublockapi.entity.Course;
-import com.mvo.edublockapi.entity.Student;
+import com.mvo.edublockapi.entity.Department;
 import com.mvo.edublockapi.entity.Teacher;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.TeacherMapper;
@@ -79,6 +77,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public ResponseGetCoursesDTO setRelationTeacherWithCourse(Long teacherId, Long courseId) {
+        log.info("Setting relations for teacher-course, with teacher id: {}, and course id: {}", teacherId, courseId);
         Teacher teacher = getTeacher(teacherId);
         Course course = courseService.getCourseById(courseId);
         teacher.getCourses().add(course);
@@ -86,7 +85,8 @@ public class TeacherServiceImpl implements TeacherService {
 
     }
 
-    private Teacher getTeacher(Long id) {
+    @Override
+    public Teacher getTeacher(Long id) {
         log.info("Started found for teacher with id: {}", id);
         return teacherRepository.findTeacherById(id)
             .orElseThrow(() -> {
@@ -96,4 +96,5 @@ public class TeacherServiceImpl implements TeacherService {
                 );
             });
     }
+
 }
