@@ -25,7 +25,9 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+    }
     implementation("org.flywaydb:flyway-core")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:11.3.4")
     compileOnly("org.projectlombok:lombok")
@@ -40,8 +42,18 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 
-}
+    compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+    if (project.hasProperty("tomcat") || !project.hasProperty("jetty")) {
+        implementation("org.springframework.boot:spring-boot-starter-tomcat:3.4.4")
+    }
+
+    if (project.hasProperty("jetty")) {
+        implementation("org.springframework.boot:spring-boot-starter-jetty:3.4.4")
+    }
+
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 }

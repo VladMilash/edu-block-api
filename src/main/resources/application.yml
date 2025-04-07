@@ -18,8 +18,32 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  profiles:
+    active: tomcat
 
 logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+---
+
+spring:
+  config:
+    activate:
+      on-profile: tomcat
+server:
+  port: 8081
+  tomcat:
+    threads:
+      max: 200
+---
+
+spring:
+  config:
+    activate:
+      on-profile: jetty
+server:
+  port: 8082
+  jetty:
+    threads:
+      max: 200
