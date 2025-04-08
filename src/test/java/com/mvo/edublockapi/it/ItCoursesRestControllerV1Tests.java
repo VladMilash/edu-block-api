@@ -61,13 +61,12 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
             .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("test"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.teacher", nullValue()))
             .andExpect(MockMvcResultMatchers.jsonPath("$.students").isEmpty());
-
     }
 
 
     @Test
     @DisplayName("Test get course by id functionality")
-    public void given_courseId_whenGetCourse_thenSuccessResponse() throws Exception {
+    public void givenCourseId_whenGetCourse_thenSuccessResponse() throws Exception {
         //given
         Course course = new Course();
         course.setTitle("Test");
@@ -105,7 +104,7 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
     }
 
     @Test
-    @DisplayName("Test get all course functionality")
+    @DisplayName("Test get all courses functionality")
     public void givenGetStudentsRequest_whenGetStudents_thenNonEmptyList() throws Exception {
         //given
 
@@ -160,7 +159,6 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(404)))
             .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Course with ID 200 not found")));
-
     }
 
     @Test
@@ -180,7 +178,6 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.massage", CoreMatchers.is("Course deleted successfully")));
-
     }
 
     @Test
@@ -198,7 +195,6 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(404)))
             .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Course with ID 200 not found")));
-
     }
 
 }
