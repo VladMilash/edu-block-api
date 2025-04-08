@@ -1,10 +1,10 @@
 package com.mvo.edublockapi.it;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mvo.edublockapi.dto.requestdto.DepartmentTransientDTO;
-import com.mvo.edublockapi.entity.Department;
+import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
+import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Teacher;
-import com.mvo.edublockapi.repository.DepartmentRepository;
+import com.mvo.edublockapi.repository.CourseRepository;
 import com.mvo.edublockapi.repository.TeacherRepository;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.Matchers.nullValue;
@@ -29,32 +28,33 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBaseTest {
+public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseTest {
+    @Autowired
+    private TeacherRepository teacherRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private DepartmentRepository departmentRepository;
-    @Autowired
-    private TeacherRepository teacherRepository;
+    private CourseRepository courseRepository;
 
-    private DepartmentTransientDTO departmentTransientDTO;
+    private TeacherTransientDTO teacherTransientDTO;
+
 
     @BeforeEach
     void setUp() {
-        departmentTransientDTO = new DepartmentTransientDTO("test");
+        teacherTransientDTO = new TeacherTransientDTO("test");
     }
 
     @Test
-    @DisplayName("Test save department functionality")
-    public void givenDepartmentTransientDTO_whenSaveDepartment_thenSuccessResponse() throws Exception {
+    @DisplayName("Test save teacher functionality")
+    public void givenTeacherTransientDTO_whenSaveDepartment_thenSuccessResponse() throws Exception {
         //given
 
         //when
-        ResultActions result = mockMvc.perform(post("/api/v1/departments/")
+        ResultActions result = mockMvc.perform(post("/api/v1/teachers")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(departmentTransientDTO)));
+            .content(objectMapper.writeValueAsString(teacherTransientDTO)));
 
         //then
         result
@@ -62,19 +62,20 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("test"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.headOfDepartment", nullValue()));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.courses").isArray())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.department", nullValue()));
     }
 
     @Test
-    @DisplayName("Test get department by id functionality")
-    public void givenDepartmentId_whenGetDepartment_thenSuccessResponse() throws Exception {
+    @DisplayName("Test get teacher by id functionality")
+    public void givenTeacherId_whenGetDepartment_thenSuccessResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("test");
-        departmentRepository.save(department);
+        Teacher teacher = new Teacher();
+        teacher.setName("test");
+        teacherRepository.save(teacher);
 
         //when
-        ResultActions result = mockMvc.perform(get("/api/v1/departments/" + department.getId())
+        ResultActions result = mockMvc.perform(get("/api/v1/teachers/" + teacher.getId())
             .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -83,16 +84,17 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("test"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.headOfDepartment", nullValue()));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.courses").isArray())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.department", nullValue()));
     }
 
     @Test
-    @DisplayName("Test get department by incorrect id functionality")
+    @DisplayName("Test get teacher by incorrect id functionality")
     public void givenIncorrectId_whenGetById_thenErrorResponse() throws Exception {
         //given
 
         //when
-        ResultActions result = mockMvc.perform(get("/api/v1/departments/" + 200)
+        ResultActions result = mockMvc.perform(get("/api/v1/teachers/" + 200)
             .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -100,16 +102,16 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(404)))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Department with ID 200 not found")));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Teacher with ID 200 not found")));
     }
 
     @Test
-    @DisplayName("Test get all departments functionality")
-    public void givenGetDepartmentsRequest_whenGetStudents_thenNonEmptyList() throws Exception {
+    @DisplayName("Test get all teachers functionality")
+    public void givenGetTeachersRequest_whenGetStudents_thenNonEmptyList() throws Exception {
         //given
 
         //when
-        ResultActions result = mockMvc.perform(get("/api/v1/departments/")
+        ResultActions result = mockMvc.perform(get("/api/v1/teachers")
             .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -121,17 +123,17 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
     }
 
     @Test
-    @DisplayName("Update department by id functionality")
+    @DisplayName("Update teacher by id functionality")
     public void givenDepartmentId_whenUpdateDepartment_thenSuccessResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("new");
-        departmentRepository.save(department);
+        Teacher teacher = new Teacher();
+        teacher.setName("new");
+        teacherRepository.save(teacher);
 
         //when
-        ResultActions result = mockMvc.perform(put("/api/v1/departments/" + department.getId())
+        ResultActions result = mockMvc.perform(put("/api/v1/teachers/" + teacher.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(departmentTransientDTO)));
+            .content(objectMapper.writeValueAsString(teacherTransientDTO)));
 
         //then
         result
@@ -139,53 +141,54 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("test"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.headOfDepartment", nullValue()));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.courses").isArray())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.department", nullValue()));
     }
 
     @Test
-    @DisplayName("Update department by incorrect id functionality")
-    public void givenIncorrectId_whenUpdateDepartment_thenErrorResponse() throws Exception {
+    @DisplayName("Update teacher by incorrect id functionality")
+    public void givenIncorrectId_whenUpdateTeacher_thenErrorResponse() throws Exception {
         //given
 
         //when
-        ResultActions result = mockMvc.perform(put("/api/v1/departments/" + 200)
+        ResultActions result = mockMvc.perform(put("/api/v1/teachers/" + 200)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(departmentTransientDTO)));
+            .content(objectMapper.writeValueAsString(teacherTransientDTO)));
 
         //then
         result
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(404)))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Department with ID 200 not found")));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Teacher with ID 200 not found")));
     }
 
     @Test
-    @DisplayName("Delete department by id functionality")
-    public void givenDepartmentId_whenDeleteDepartment_thenDeletedResponse() throws Exception {
+    @DisplayName("Delete teacher by id functionality")
+    public void givenTeacherId_whenDeleteTeacher_thenDeletedResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("new");
-        departmentRepository.save(department);
+        Teacher teacher = new Teacher();
+        teacher.setName("new");
+        teacherRepository.save(teacher);
 
         //when
-        ResultActions result = mockMvc.perform(delete("/api/v1/departments/" + department.getId())
+        ResultActions result = mockMvc.perform(delete("/api/v1/teachers/" + teacher.getId())
             .contentType(MediaType.APPLICATION_JSON));
 
         //then
         result
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.massage", CoreMatchers.is("Department deleted successfully")));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.massage", CoreMatchers.is("Teacher deleted successfully")));
     }
 
     @Test
-    @DisplayName("Delete department by incorrect id functionality")
-    public void givenIncorrectId_whenDeleteDepartment_thenErrorResponse() throws Exception {
+    @DisplayName("Delete teacher by incorrect id functionality")
+    public void givenIncorrectId_whenDeleteTeacher_thenErrorResponse() throws Exception {
         //given
 
         //when
-        ResultActions result = mockMvc.perform(delete("/api/v1/departments/" + 200)
+        ResultActions result = mockMvc.perform(delete("/api/v1/teachers/" + 200)
             .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -193,24 +196,24 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(404)))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Department with ID 200 not found")));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Teacher with ID 200 not found")));
     }
 
     @Test
-    @DisplayName("Set relation department-teacher functionality")
-    public void givenDepartmentIdAndTeacherId_whenSetRelationWitTeacherDepartment_thenSuccessResponse() throws Exception {
+    @DisplayName("Set relation teacher-course functionality")
+    public void givenTeacherIdAndCourseId_whenSetRelationWitTeacherCourse_thenSuccessResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("test");
-        departmentRepository.save(department);
-
         Teacher teacher = new Teacher();
         teacher.setName("test");
         teacherRepository.save(teacher);
 
+        Course course = new Course();
+        course.setTitle("test");
+        courseRepository.save(course);
+
         //when
         ResultActions result = mockMvc
-            .perform(post("/api/v1/departments/" + department.getId() + "/teacher/" + teacher.getId())
+            .perform(post("/api/v1/teachers/" + teacher.getId() + "/courses/" + course.getId())
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -218,43 +221,23 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("test"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.headOfDepartment.id").value(teacher.getId()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.headOfDepartment.name").value(teacher.getName()));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("test"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.teacher.id").isNotEmpty())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.teacher.name").value("test"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.students").isEmpty());
     }
 
     @Test
-    @DisplayName("Set relation department-teacher with incorrect department id and correct teacher id functionality")
-    public void givenIncorrectDepartmentIdAndCorrectTeacherId_whenSetRelationWitTeacherDepartment_thenErrorResponse() throws Exception {
+    @DisplayName("Set relation teacher-course with incorrect teacher id and correct course id functionality")
+    public void givenIncorrectTeacherIdAndCorrectCourseId_whenSetRelationWitTeacherCourse_thenErrorResponse() throws Exception {
         //given
-        Teacher teacher = new Teacher();
-        teacher.setName("test");
-        teacherRepository.save(teacher);
+        Course course = new Course();
+        course.setTitle("test");
+        courseRepository.save(course);
 
         //when
         ResultActions result = mockMvc
-            .perform(post("/api/v1/departments/" + 200 + "/teacher/" + teacher.getId())
-                .contentType(MediaType.APPLICATION_JSON));
-
-        //then
-        result
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(MockMvcResultMatchers.status().isNotFound())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(404)))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Department with ID 200 not found")));
-    }
-
-    @Test
-    @DisplayName("Set relation department-teacher with correct department id and incorrect teacher id functionality")
-    public void givenCorrectDepartmentIdIncorrectAndTeacherId_whenSetRelationWitTeacherDepartment_thenErrorResponse() throws Exception {
-        //given
-        Department department = new Department();
-        department.setName("test");
-        departmentRepository.save(department);
-
-        //when
-        ResultActions result = mockMvc
-            .perform(post("/api/v1/departments/" + department.getId() + "/teacher/" + 200)
+            .perform(post("/api/v1/teachers/" + 200 + "/courses/" + course.getId())
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -263,6 +246,27 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(404)))
             .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Teacher with ID 200 not found")));
+    }
+
+    @Test
+    @DisplayName("Set relation teacher-course with correct teacher id and incorrect course id functionality")
+    public void givenCorrectTeacherIdAndIncorrectCourseId_whenSetRelationWitTeacherCourse_thenErrorResponse() throws Exception {
+        //given
+        Teacher teacher = new Teacher();
+        teacher.setName("test");
+        teacherRepository.save(teacher);
+
+        //when
+        ResultActions result = mockMvc
+            .perform(post("/api/v1/teachers/" + teacher.getId() + "/courses/" + 200)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        result
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isNotFound())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(404)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Course with ID 200 not found")));
     }
 
 }

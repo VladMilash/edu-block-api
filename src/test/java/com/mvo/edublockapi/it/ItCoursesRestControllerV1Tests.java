@@ -145,7 +145,7 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
 
     @Test
     @DisplayName("Update course by incorrect id functionality")
-    public void givenIncorrectId_whenUpdateCourse_thenDeletedResponse() throws Exception {
+    public void givenIncorrectId_whenUpdateCourse_thenErrorResponse() throws Exception {
         //given
 
         //when
@@ -182,7 +182,7 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
 
     @Test
     @DisplayName("Delete course by incorrect id functionality")
-    public void givenIncorrectId_whenDeleteCourse_thenDeletedResponse() throws Exception {
+    public void givenIncorrectId_whenDeleteCourse_thenErrorResponse() throws Exception {
         //given
 
         //when
