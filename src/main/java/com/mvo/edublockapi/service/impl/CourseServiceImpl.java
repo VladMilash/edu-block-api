@@ -71,7 +71,8 @@ public class CourseServiceImpl implements CourseService {
         return new DeleteResponseDTO("Course deleted successfully");
     }
 
-     public Course getCourseById(Long id) {
+    @Override
+    public Course getCourseById(Long id) {
         log.info("Started found for course with id: {}", id);
         return courseRepository.findById(id)
             .orElseThrow(() -> {
