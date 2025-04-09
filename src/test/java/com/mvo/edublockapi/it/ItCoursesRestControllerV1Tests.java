@@ -105,7 +105,7 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
 
     @Test
     @DisplayName("Test get all courses functionality")
-    public void givenGetStudentsRequest_whenGetStudents_thenNonEmptyList() throws Exception {
+    public void givenGetCoursesRequest_whenGetCourses_thenNonEmptyList() throws Exception {
         //given
 
         //when
