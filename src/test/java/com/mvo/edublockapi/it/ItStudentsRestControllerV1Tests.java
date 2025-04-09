@@ -44,6 +44,7 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @BeforeEach
     void setUp() {
         studentTransientDTO = new StudentTransientDTO("test", "test@test.ru");
+        studentRepository.deleteAll();
     }
 
     @Test
@@ -135,6 +136,10 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Test get all students functionality")
     public void givenGetStudentsRequest_whenGetStudents_thenNonEmptyList() throws Exception {
         //given
+        Student student = new Student();
+        student.setName("new");
+        student.setEmail("new@new.ru");
+        studentRepository.save(student);
 
         //when
         ResultActions result = mockMvc.perform(get("/api/v1/students/")
