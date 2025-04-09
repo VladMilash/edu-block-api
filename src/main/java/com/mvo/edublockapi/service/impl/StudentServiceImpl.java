@@ -4,6 +4,7 @@ import com.mvo.edublockapi.dto.*;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
+import com.mvo.edublockapi.exception.AllReadyExistException;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.StudentMapper;
 import com.mvo.edublockapi.repository.StudentRepository;
@@ -27,6 +28,11 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseGetStudentDTO save(StudentTransientDTO studentTransientDTO) {
+        if (isContainsWithEmail(studentTransientDTO.email())) {
+            log.error("The email {} was used for registration earlier", studentTransientDTO.email());
+            throw new AllReadyExistException("Student with email " + studentTransientDTO.email() + " all ready exist");
+        }
+        log.info("The email {} has not been used for registration before", studentTransientDTO.email());
         log.info("Creating student with name: {}, and email: {}", studentTransientDTO.name(), studentTransientDTO.email());
         Student transientStudent = studentMapper.fromStudentTransientDTO(studentTransientDTO);
         Student persistStudent = studentRepository.save(transientStudent);
@@ -104,6 +110,12 @@ public class StudentServiceImpl implements StudentService {
                     "Student with ID " + id + " not found"
                 );
             });
+    }
+
+    private boolean isContainsWithEmail(String email) {
+        log.info("Check if the email {} has been used for registration before", email);
+        Student student = studentRepository.findByEmail(email);
+        return student != null;
     }
 
 

@@ -1,5 +1,6 @@
 package com.mvo.edublockapi.errorhandling;
 
+import com.mvo.edublockapi.exception.AllReadyExistException;
 import com.mvo.edublockapi.exception.ErrorResponse;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +29,22 @@ public class ErrorHandlingControllerAdvice {
         );
         log.info("Sending errorResponse");
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(AllReadyExistException.class)
+    public ResponseEntity<ErrorResponse> onAllreadyExistException(AllReadyExistException e, HttpServletRequest request) {
+        String path = request.getRequestURI();
+        log.info("Exception from path: {} caught", path);
+        ErrorResponse errorResponse = new ErrorResponse(
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()),
+            400,
+            "Bad Request",
+            e.getMessage(),
+            path
+        );
+        log.info("Sending errorResponse");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(errorResponse);
     }
 }
