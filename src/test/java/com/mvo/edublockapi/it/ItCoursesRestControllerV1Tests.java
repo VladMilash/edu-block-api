@@ -1,7 +1,5 @@
 package com.mvo.edublockapi.it;
 
-import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.repository.CourseRepository;
