@@ -1,13 +1,8 @@
 package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
-import com.mvo.edublockapi.dto.ResponseGetDepartmentDTO;
-import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
-import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
+import com.mvo.edublockapi.dto.ResponseDepartmentDTO;
 import com.mvo.edublockapi.dto.requestdto.DepartmentTransientDTO;
-import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
-import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Department;
 import com.mvo.edublockapi.entity.Teacher;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
@@ -18,8 +13,8 @@ import com.mvo.edublockapi.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -31,7 +26,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final TeacherService teacherService;
 
     @Override
-    public ResponseGetDepartmentDTO save(DepartmentTransientDTO departmentTransientDTO) {
+    public ResponseDepartmentDTO save(DepartmentTransientDTO departmentTransientDTO) {
         log.info("Creating department with name: {}", departmentTransientDTO.name());
         Department transientDepartment = departmentMapper.fromDepartmentTransientDTO(departmentTransientDTO);
         Department persistDepartment = departmentRepository.save(transientDepartment);
@@ -40,14 +35,14 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseGetDepartmentDTO getById(Long id) {
+    public ResponseDepartmentDTO getById(Long id) {
         Department department = getDepartmentById(id);
         log.info("Department with id: {} successfully found", id);
         return departmentMapper.toResponseGetDepartmentDTO(department);
     }
 
     @Override
-    public List<ResponseGetDepartmentDTO> getAll() {
+    public List<ResponseDepartmentDTO> getAll() {
         log.info("Getting all department");
         return departmentRepository.findAll()
             .stream()
@@ -66,7 +61,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
     @Override
-    public ResponseGetDepartmentDTO update(Long id, DepartmentTransientDTO departmentTransientDTO) {
+    public ResponseDepartmentDTO update(Long id, DepartmentTransientDTO departmentTransientDTO) {
         log.info("Getting department by id: {} for update", id);
         Department department = getDepartmentById(id);
         log.info("Updating department with id: {}", id);
@@ -77,8 +72,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
 
+    @Transactional
     @Override
-    public ResponseGetDepartmentDTO setRelationWithTeacher(Long departmentId, Long teacherId) {
+    public ResponseDepartmentDTO setRelationWithTeacher(Long departmentId, Long teacherId) {
         log.info("Setting relations for department-teacher, with department id: {}, and teacher id: {}", departmentId, teacherId);
         Department department = getDepartmentById(departmentId);
         Teacher teacher = teacherService.getTeacher(teacherId);

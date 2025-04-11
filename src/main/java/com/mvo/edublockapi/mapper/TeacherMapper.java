@@ -2,7 +2,7 @@ package com.mvo.edublockapi.mapper;
 
 import com.mvo.edublockapi.dto.CourseShortDTO;
 import com.mvo.edublockapi.dto.DepartmentShortDTO;
-import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
+import com.mvo.edublockapi.dto.ResponseTeacherDTO;
 import com.mvo.edublockapi.dto.TeacherShortDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
 import com.mvo.edublockapi.entity.Teacher;
@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface TeacherMapper {
 
-    default ResponseGetTeacherDTO toResponseGetTeacherDTO(Teacher teacher) {
-        return new ResponseGetTeacherDTO(
+    default ResponseTeacherDTO toResponseGetTeacherDTO(Teacher teacher) {
+        return new ResponseTeacherDTO(
             teacher.getId(),
             teacher.getName(),
             teacher.getCourses()

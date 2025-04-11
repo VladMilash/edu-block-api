@@ -1,6 +1,6 @@
 package com.mvo.edublockapi.service.impl;
 
-import com.mvo.edublockapi.dto.ResponseGetStudentDTO;
+import com.mvo.edublockapi.dto.ResponseStudentDTO;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.exception.AlReadyExistException;
@@ -32,7 +32,7 @@ class StudentServiceImplTest {
 
     private StudentTransientDTO studentTransientDTO;
     private Student persistStudent;
-    private ResponseGetStudentDTO responseGetStudentDTO;
+    private ResponseStudentDTO responseStudentDTO;
 
 
     @BeforeEach
@@ -42,7 +42,7 @@ class StudentServiceImplTest {
         persistStudent.setId(1L);
         persistStudent.setName("test");
         persistStudent.setEmail("test@test.ru");
-        responseGetStudentDTO = new ResponseGetStudentDTO(1L,"test", "test@test.ru", new HashSet<>());
+        responseStudentDTO = new ResponseStudentDTO(1L,"test", "test@test.ru", new HashSet<>());
     }   
 
     @Test
@@ -51,10 +51,10 @@ class StudentServiceImplTest {
         //given
         when(studentRepository.findByEmail(anyString())).thenReturn(null);
         when(studentRepository.save(any())).thenReturn(persistStudent);
-        when(studentMapper.toResponseGetStudentDTO(any())).thenReturn(responseGetStudentDTO);
+        when(studentMapper.toResponseGetStudentDTO(any())).thenReturn(responseStudentDTO);
 
         //when
-        ResponseGetStudentDTO responseFromService = serviceUnderTest.save(studentTransientDTO);
+        ResponseStudentDTO responseFromService = serviceUnderTest.save(studentTransientDTO);
 
         //then
         assertNotNull(responseFromService);

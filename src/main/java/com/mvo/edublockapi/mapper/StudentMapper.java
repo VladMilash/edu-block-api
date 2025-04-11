@@ -1,7 +1,7 @@
 package com.mvo.edublockapi.mapper;
 
 import com.mvo.edublockapi.dto.CourseShortDTO;
-import com.mvo.edublockapi.dto.ResponseGetStudentDTO;
+import com.mvo.edublockapi.dto.ResponseStudentDTO;
 import com.mvo.edublockapi.dto.StudentDTO;
 import com.mvo.edublockapi.dto.TeacherShortDTO;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
@@ -24,8 +24,8 @@ public interface StudentMapper {
     @InheritInverseConfiguration
     Student map(StudentDTO studentDTO);
 
-    default ResponseGetStudentDTO toResponseGetStudentDTO(Student student) {
-        return new ResponseGetStudentDTO(
+    default ResponseStudentDTO toResponseGetStudentDTO(Student student) {
+        return new ResponseStudentDTO(
             student.getId(),
             student.getName(),
             student.getEmail(),

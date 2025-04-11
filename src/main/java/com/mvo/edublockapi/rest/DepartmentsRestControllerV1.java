@@ -1,7 +1,7 @@
 package com.mvo.edublockapi.rest;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.ResponseGetDepartmentDTO;
+import com.mvo.edublockapi.dto.ResponseDepartmentDTO;
 import com.mvo.edublockapi.dto.requestdto.DepartmentTransientDTO;
 import com.mvo.edublockapi.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
@@ -16,22 +16,22 @@ public class DepartmentsRestControllerV1 {
     private final DepartmentService service;
 
     @PostMapping
-    public ResponseGetDepartmentDTO saveDepartment(@RequestBody DepartmentTransientDTO departmentTransientDTO) {
+    public ResponseDepartmentDTO saveDepartment(@RequestBody DepartmentTransientDTO departmentTransientDTO) {
         return service.save(departmentTransientDTO);
     }
 
     @GetMapping
-    public List<ResponseGetDepartmentDTO> getAll() {
+    public List<ResponseDepartmentDTO> getAll() {
         return service.getAll();
     }
 
     @GetMapping("{id}")
-    public ResponseGetDepartmentDTO getById(@PathVariable Long id) {
+    public ResponseDepartmentDTO getById(@PathVariable Long id) {
         return service.getById(id);
     }
 
     @PutMapping("{id}")
-    public ResponseGetDepartmentDTO update(@PathVariable Long id, @RequestBody DepartmentTransientDTO departmentTransientDTO) {
+    public ResponseDepartmentDTO update(@PathVariable Long id, @RequestBody DepartmentTransientDTO departmentTransientDTO) {
         return service.update(id, departmentTransientDTO);
     }
 
@@ -41,7 +41,7 @@ public class DepartmentsRestControllerV1 {
     }
 
     @PostMapping("{departmentId}/teacher/{teacherId}")
-    public ResponseGetDepartmentDTO setRelationWitTeacher(@PathVariable Long departmentId, @PathVariable Long teacherId) {
+    public ResponseDepartmentDTO setRelationWitTeacher(@PathVariable Long departmentId, @PathVariable Long teacherId) {
         return service.setRelationWithTeacher(departmentId, teacherId);
     }
 

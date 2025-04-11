@@ -2,7 +2,7 @@ package com.mvo.edublockapi.rest;
 
 import com.mvo.edublockapi.dto.CourseShortDTO;
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.ResponseGetStudentDTO;
+import com.mvo.edublockapi.dto.ResponseStudentDTO;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -18,22 +18,22 @@ public class StudentsRestControllerV1 {
     private final StudentService service;
 
     @PostMapping
-    public ResponseGetStudentDTO save(@RequestBody StudentTransientDTO studentTransientDTO) {
+    public ResponseStudentDTO save(@RequestBody StudentTransientDTO studentTransientDTO) {
         return service.save(studentTransientDTO);
     }
 
     @GetMapping
-    public List<ResponseGetStudentDTO> getAll() {
+    public List<ResponseStudentDTO> getAll() {
         return service.getAll();
     }
 
     @GetMapping("{id}")
-    public ResponseGetStudentDTO getById(@PathVariable Long id) {
+    public ResponseStudentDTO getById(@PathVariable Long id) {
         return service.getById(id);
     }
 
     @PutMapping("{id}")
-    public ResponseGetStudentDTO update(@PathVariable Long id, @RequestBody StudentTransientDTO studentTransientDTO) {
+    public ResponseStudentDTO update(@PathVariable Long id, @RequestBody StudentTransientDTO studentTransientDTO) {
         return service.update(id, studentTransientDTO);
     }
 
@@ -43,7 +43,7 @@ public class StudentsRestControllerV1 {
     }
 
     @PostMapping("{studentId}/courses/{courseId}")
-    public ResponseGetStudentDTO setRelationWithCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
+    public ResponseStudentDTO setRelationWithCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
         return service.setRelationWithCourse(studentId,courseId);
     }
 

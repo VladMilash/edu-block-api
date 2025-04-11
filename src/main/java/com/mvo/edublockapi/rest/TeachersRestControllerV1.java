@@ -1,8 +1,8 @@
 package com.mvo.edublockapi.rest;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
-import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
+import com.mvo.edublockapi.dto.ResponseCoursesDTO;
+import com.mvo.edublockapi.dto.ResponseTeacherDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
 import com.mvo.edublockapi.service.TeacherService;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +17,22 @@ public class TeachersRestControllerV1 {
     private final TeacherService service;
 
     @PostMapping
-    public ResponseGetTeacherDTO save(@RequestBody TeacherTransientDTO teacherTransientDTO) {
+    public ResponseTeacherDTO save(@RequestBody TeacherTransientDTO teacherTransientDTO) {
         return service.save(teacherTransientDTO);
     }
 
     @GetMapping("{id}")
-    public ResponseGetTeacherDTO getById(@PathVariable Long id) {
+    public ResponseTeacherDTO getById(@PathVariable Long id) {
         return service.getById(id);
     }
 
     @GetMapping
-    public List<ResponseGetTeacherDTO> getAll() {
+    public List<ResponseTeacherDTO> getAll() {
         return service.getAll();
     }
 
     @PutMapping("{id}")
-    public ResponseGetTeacherDTO update(@PathVariable Long id, @RequestBody TeacherTransientDTO teacherTransientDTO) {
+    public ResponseTeacherDTO update(@PathVariable Long id, @RequestBody TeacherTransientDTO teacherTransientDTO) {
         return service.update(id,teacherTransientDTO);
     }
 
@@ -42,7 +42,7 @@ public class TeachersRestControllerV1 {
     }
 
     @PostMapping("/{teacherId}/courses/{coursesId}")
-    public ResponseGetCoursesDTO setRelationTeacherWithCourse(@PathVariable Long teacherId, @PathVariable Long coursesId) {
+    public ResponseCoursesDTO setRelationTeacherWithCourse(@PathVariable Long teacherId, @PathVariable Long coursesId) {
         return service.setRelationTeacherWithCourse(teacherId, coursesId);
     }
 

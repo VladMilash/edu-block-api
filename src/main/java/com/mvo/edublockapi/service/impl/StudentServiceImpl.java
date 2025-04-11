@@ -13,6 +13,7 @@ import com.mvo.edublockapi.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,7 @@ public class StudentServiceImpl implements StudentService {
     private final CourseService courseService;
 
     @Override
-    public ResponseGetStudentDTO save(StudentTransientDTO studentTransientDTO) {
+    public ResponseStudentDTO save(StudentTransientDTO studentTransientDTO) {
         if (isContainsWithEmail(studentTransientDTO.email())) {
             log.error("The email {} was used for registration earlier", studentTransientDTO.email());
             throw new AlReadyExistException("Student with email " + studentTransientDTO.email() + " already exist");
@@ -42,7 +43,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<ResponseGetStudentDTO> getAll() {
+    public List<ResponseStudentDTO> getAll() {
         log.info("Getting all students");
         List<Student> students = studentRepository.findAll();
         return students
@@ -52,7 +53,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseGetStudentDTO getById(Long id) {
+    public ResponseStudentDTO getById(Long id) {
         log.info("Getting student by id: {}", id);
         Student student = getStudent(id);
         log.info("Student with id: {} successfully found", id);
@@ -60,7 +61,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseGetStudentDTO update(Long id, StudentTransientDTO studentTransientDTO) {
+    public ResponseStudentDTO update(Long id, StudentTransientDTO studentTransientDTO) {
         log.info("Getting student by id: {} for update", id);
         Student student = getStudent(id);
         log.info("Updating student with id: {}", id);
@@ -80,8 +81,9 @@ public class StudentServiceImpl implements StudentService {
         return new DeleteResponseDTO("Student deleted successfully");
     }
 
+    @Transactional
     @Override
-    public ResponseGetStudentDTO setRelationWithCourse(Long studentId, Long courseId) {
+    public ResponseStudentDTO setRelationWithCourse(Long studentId, Long courseId) {
         log.info("Setting relations for student-course, with student id: {}, and course id: {}", studentId, courseId);
         Student student = getStudent(studentId);
         Course course = courseService.getCourseById(courseId);
@@ -95,7 +97,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Set<CourseShortDTO> getStudentCourses(Long id) {
         log.info("Getting courses for student with id: {}", id);
-        ResponseGetStudentDTO student = getById(id);
+        ResponseStudentDTO student = getById(id);
         log.info("Courses for student with id: {} successfully found", id);
         return student.courses();
 

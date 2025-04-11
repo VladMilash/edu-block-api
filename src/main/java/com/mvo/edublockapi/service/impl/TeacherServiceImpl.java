@@ -1,11 +1,10 @@
 package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
-import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
+import com.mvo.edublockapi.dto.ResponseCoursesDTO;
+import com.mvo.edublockapi.dto.ResponseTeacherDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
 import com.mvo.edublockapi.entity.Course;
-import com.mvo.edublockapi.entity.Department;
 import com.mvo.edublockapi.entity.Teacher;
 import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.TeacherMapper;
@@ -15,6 +14,7 @@ import com.mvo.edublockapi.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final CourseService courseService;
 
     @Override
-    public ResponseGetTeacherDTO save(TeacherTransientDTO teacherTransientDTO) {
+    public ResponseTeacherDTO save(TeacherTransientDTO teacherTransientDTO) {
         log.info("Creating teacher with name: {}", teacherTransientDTO.name());
         Teacher transientTeacher = teacherMapper.fromTeacherTransientDTO(teacherTransientDTO);
         Teacher persistTeacher = teacherRepository.save(transientTeacher);
@@ -38,7 +38,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public ResponseGetTeacherDTO getById(Long id) {
+    public ResponseTeacherDTO getById(Long id) {
         log.info("Getting teacher by id: {}", id);
         Teacher teacher = getTeacher(id);
         log.info("Teacher with id: {} successfully found", id);
@@ -46,7 +46,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<ResponseGetTeacherDTO> getAll() {
+    public List<ResponseTeacherDTO> getAll() {
         log.info("Getting all teachers");
         List<Teacher> teachers = teacherRepository.findAll();
         return teachers
@@ -56,7 +56,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public ResponseGetTeacherDTO update(Long id, TeacherTransientDTO teacherTransientDTO) {
+    public ResponseTeacherDTO update(Long id, TeacherTransientDTO teacherTransientDTO) {
         log.info("Getting teacher by id: {} for update", id);
         Teacher teacher = getTeacher(id);
         log.info("Updating teacher with id: {}", id);
@@ -75,8 +75,9 @@ public class TeacherServiceImpl implements TeacherService {
         return new DeleteResponseDTO("Teacher deleted successfully");
     }
 
+    @Transactional
     @Override
-    public ResponseGetCoursesDTO setRelationTeacherWithCourse(Long teacherId, Long courseId) {
+    public ResponseCoursesDTO setRelationTeacherWithCourse(Long teacherId, Long courseId) {
         log.info("Setting relations for teacher-course, with teacher id: {}, and course id: {}", teacherId, courseId);
         Teacher teacher = getTeacher(teacherId);
         Course course = courseService.getCourseById(courseId);

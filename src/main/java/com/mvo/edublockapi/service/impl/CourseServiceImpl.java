@@ -1,7 +1,7 @@
 package com.mvo.edublockapi.service.impl;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
+import com.mvo.edublockapi.dto.ResponseCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
@@ -13,6 +13,7 @@ import com.mvo.edublockapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +26,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
 
     @Override
-    public ResponseGetCoursesDTO save(CourseTransientDTO courseTransientDTO) {
+    public ResponseCoursesDTO save(CourseTransientDTO courseTransientDTO) {
         log.info("Creating course with title: {}", courseTransientDTO.title());
         Course transientCourse = courseMapper.fromCourseTransientDTO(courseTransientDTO);
         Course persistCourse = courseRepository.save(transientCourse);
@@ -35,7 +36,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<ResponseGetCoursesDTO> getAll() {
+    public List<ResponseCoursesDTO> getAll() {
         log.info("Getting all courses");
         List<Course> courses = courseRepository.findAll();
         return courses
@@ -45,14 +46,14 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public ResponseGetCoursesDTO getById(Long id) {
+    public ResponseCoursesDTO getById(Long id) {
         Course course = getCourseById(id);
         log.info("Course with id: {} successfully found", id);
         return courseMapper.toResponseGetCourses(course);
     }
 
     @Override
-    public ResponseGetCoursesDTO update(Long id, CourseTransientDTO courseTransientDTO) {
+    public ResponseCoursesDTO update(Long id, CourseTransientDTO courseTransientDTO) {
         log.info("Getting course by id: {} for update", id);
         Course course = getCourseById(id);
         log.info("Updating course with id: {}", id);
@@ -81,6 +82,7 @@ public class CourseServiceImpl implements CourseService {
             });
     }
 
+    @Transactional
     @Override
     public void setRelationWithStudent(Long courseId , Student student) {
         Course course = getCourseById(courseId);
@@ -89,8 +91,9 @@ public class CourseServiceImpl implements CourseService {
         log.info("Finished setting relation for course with id: {} and student with id: {}", courseId, student.getId());
     }
 
+    @Transactional
     @Override
-    public ResponseGetCoursesDTO setRelationWithTeacher(Long courseId, Teacher teacher) {
+    public ResponseCoursesDTO setRelationWithTeacher(Long courseId, Teacher teacher) {
         Course course = getCourseById(courseId);
         course.setTeacher(teacher);
         Course uodatedCourse = courseRepository.save(course);

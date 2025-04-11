@@ -1,20 +1,19 @@
 package com.mvo.edublockapi.service;
 
 import com.mvo.edublockapi.dto.DeleteResponseDTO;
-import com.mvo.edublockapi.dto.ResponseGetCoursesDTO;
-import com.mvo.edublockapi.dto.ResponseGetTeacherDTO;
+import com.mvo.edublockapi.dto.ResponseCoursesDTO;
+import com.mvo.edublockapi.dto.ResponseTeacherDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
-import com.mvo.edublockapi.entity.Department;
 import com.mvo.edublockapi.entity.Teacher;
 
 import java.util.List;
 
 public interface TeacherService {
-    ResponseGetTeacherDTO save(TeacherTransientDTO teacherTransientDTO);
-    ResponseGetTeacherDTO getById(Long id);
-    List<ResponseGetTeacherDTO> getAll();
-    ResponseGetTeacherDTO update(Long id, TeacherTransientDTO teacherTransientDTO);
+    ResponseTeacherDTO save(TeacherTransientDTO teacherTransientDTO);
+    ResponseTeacherDTO getById(Long id);
+    List<ResponseTeacherDTO> getAll();
+    ResponseTeacherDTO update(Long id, TeacherTransientDTO teacherTransientDTO);
     DeleteResponseDTO delete(Long id);
-    ResponseGetCoursesDTO setRelationTeacherWithCourse(Long teacherId, Long courseId);
+    ResponseCoursesDTO setRelationTeacherWithCourse(Long teacherId, Long courseId);
     Teacher getTeacher(Long id);
 }
