@@ -49,7 +49,7 @@ class StudentServiceImplTest {
     @DisplayName("Test save student functionality")
     public void givenStudentToSave_whenSaveStudent_thenRepositoryIsCalled() {
         //given
-        when(studentRepository.findByEmail(anyString())).thenReturn(null);
+        when(studentRepository.existsByEmail(anyString())).thenReturn(false);
         when(studentRepository.save(any())).thenReturn(persistStudent);
         when(studentMapper.toResponseGetStudentDTO(any())).thenReturn(responseStudentDTO);
 
@@ -58,7 +58,7 @@ class StudentServiceImplTest {
 
         //then
         assertNotNull(responseFromService);
-        verify(studentRepository).findByEmail(studentTransientDTO.email());
+        verify(studentRepository).existsByEmail(studentTransientDTO.email());
         verify(studentRepository).save(any());
     }
 
@@ -66,12 +66,13 @@ class StudentServiceImplTest {
     @DisplayName("Test save student with duplicate email functionality")
     public void givenStudentToSaveWithDuplicateEmail_whenSaveDeveloper_thenExceptionIsThrown() {
         //given
-        when(studentRepository.findByEmail(anyString())).thenReturn(persistStudent);
+        when(studentRepository.existsByEmail(anyString())).thenReturn(true);
 
         //when
         assertThrows(AlReadyExistException.class, () -> serviceUnderTest.save(studentTransientDTO));
 
         //then
+        verify(studentRepository).existsByEmail(studentTransientDTO.email());
         verify(studentRepository, never()).save(any());
     }
 }

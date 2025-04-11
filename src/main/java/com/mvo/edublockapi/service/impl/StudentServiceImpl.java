@@ -29,7 +29,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseStudentDTO save(StudentTransientDTO studentTransientDTO) {
-        if (isContainsWithEmail(studentTransientDTO.email())) {
+        if (studentRepository.existsByEmail(studentTransientDTO.email())) {
             log.error("The email {} was used for registration earlier", studentTransientDTO.email());
             throw new AlReadyExistException("Student with email " + studentTransientDTO.email() + " already exist");
         }
@@ -113,12 +113,5 @@ public class StudentServiceImpl implements StudentService {
                 );
             });
     }
-
-    private boolean isContainsWithEmail(String email) {
-        log.info("Check if the email {} has been used for registration before", email);
-        Student student = studentRepository.findByEmail(email);
-        return student != null;
-    }
-
 
 }
