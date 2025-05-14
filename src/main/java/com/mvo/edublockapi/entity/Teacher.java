@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class Teacher {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "teacher")
-    private Set<Course> courses;
+    private Set<Course> courses = new HashSet<>();
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

@@ -1,8 +1,5 @@
-package com.mvo.edublockapi.errorhandling;
+package com.mvo.edublockapi.exception;
 
-import com.mvo.edublockapi.exception.AlReadyExistException;
-import com.mvo.edublockapi.exception.ErrorResponse;
-import com.mvo.edublockapi.exception.NotFoundEntityException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
