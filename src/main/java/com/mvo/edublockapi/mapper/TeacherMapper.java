@@ -5,9 +5,11 @@ import com.mvo.edublockapi.dto.DepartmentShortDTO;
 import com.mvo.edublockapi.dto.ResponseTeacherDTO;
 import com.mvo.edublockapi.dto.TeacherShortDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
+import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Teacher;
 import org.mapstruct.Mapper;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -19,15 +21,19 @@ public interface TeacherMapper {
             teacher.getName(),
             teacher.getCourses()
                 .stream()
-                .map(course -> new CourseShortDTO(course.getId(), course.getTitle(),
-                    course.getTeacher() != null
-                        ? new TeacherShortDTO(course.getTeacher().getId(), course.getTeacher().getName())
-                        : null))
+                .map(course -> {
+                    return new CourseShortDTO(course.getId(), course.getTitle(),
+                        getTeacherShortDTO(course, Course::getTeacher));
+                })
                 .collect(Collectors.toSet()),
-            teacher.getDepartment() != null
-                ? new DepartmentShortDTO(teacher.getDepartment().getId(), teacher.getDepartment().getName())
-                : null
+            getDepartment(teacher)
         );
+    }
+
+    private static DepartmentShortDTO getDepartment(Teacher teacher) {
+        return teacher.getDepartment() != null
+            ? new DepartmentShortDTO(teacher.getDepartment().getId(), teacher.getDepartment().getName())
+            : null;
     }
 
     default Teacher fromTeacherTransientDTO(TeacherTransientDTO teacherTransientDTO) {
@@ -35,5 +41,16 @@ public interface TeacherMapper {
         teacher.setName(teacherTransientDTO.name());
         return teacher;
     }
+
+    static <T> TeacherShortDTO getTeacherShortDTO(T source, Function<T, Teacher> function) {
+        Teacher teacher = function.apply(source);
+        return teacher != null
+            ?
+            new TeacherShortDTO(
+                teacher.getId(),
+                teacher.getName())
+            : null;
+    }
+
 
 }

@@ -14,9 +14,7 @@ public interface DepartmentMapper {
         return new ResponseDepartmentDTO(
             department.getId(),
             department.getName(),
-            department.getHeadOfDepartment() != null
-                ? new TeacherShortDTO(department.getHeadOfDepartment().getId(), department.getHeadOfDepartment().getName())
-                : null
+            TeacherMapper.getTeacherShortDTO(department, Department::getHeadOfDepartment)
         );
     }
 

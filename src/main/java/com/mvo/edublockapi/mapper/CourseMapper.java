@@ -29,9 +29,7 @@ public interface CourseMapper {
         return new ResponseCoursesDTO(
             course.getId(),
             course.getTitle(),
-            course.getTeacher() != null
-                ? new TeacherShortDTO(course.getTeacher().getId(), course.getTeacher().getName())
-                : null,
+            TeacherMapper.getTeacherShortDTO(course, Course::getTeacher),
             course.getStudents().stream()
                 .map(student -> new StudentShortDTO(
                     student.getId(),
