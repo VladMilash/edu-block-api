@@ -3,7 +3,6 @@ package com.mvo.edublockapi.mapper;
 import com.mvo.edublockapi.dto.CourseDTO;
 import com.mvo.edublockapi.dto.ResponseCoursesDTO;
 import com.mvo.edublockapi.dto.StudentShortDTO;
-import com.mvo.edublockapi.dto.TeacherShortDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import org.mapstruct.InheritInverseConfiguration;
@@ -12,8 +11,8 @@ import org.mapstruct.Mapping;
 
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface CourseMapper {
+@Mapper(config = MapperConfig.class)
+public interface CourseMapper extends MapperConfig {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "teacher", ignore = true)
@@ -29,7 +28,7 @@ public interface CourseMapper {
         return new ResponseCoursesDTO(
             course.getId(),
             course.getTitle(),
-            TeacherMapper.getTeacherShortDTO(course, Course::getTeacher),
+            getTeacherShortDTO(course, Course::getTeacher),
             course.getStudents().stream()
                 .map(student -> new StudentShortDTO(
                     student.getId(),

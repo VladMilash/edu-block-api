@@ -3,7 +3,6 @@ package com.mvo.edublockapi.mapper;
 import com.mvo.edublockapi.dto.CourseShortDTO;
 import com.mvo.edublockapi.dto.ResponseStudentDTO;
 import com.mvo.edublockapi.dto.StudentDTO;
-import com.mvo.edublockapi.dto.TeacherShortDTO;
 import com.mvo.edublockapi.dto.requestdto.StudentTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
@@ -13,8 +12,8 @@ import org.mapstruct.Mapping;
 
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface StudentMapper {
+@Mapper(config = MapperConfig.class)
+public interface StudentMapper extends MapperConfig {
 
 
     @Mapping(target = "id", ignore = true)
@@ -37,7 +36,7 @@ public interface StudentMapper {
                     new CourseShortDTO(
                         course.getId(),
                         course.getTitle(),
-                        TeacherMapper.getTeacherShortDTO(course, Course::getTeacher)
+                        getTeacherShortDTO(course, Course::getTeacher)
                     )
                 ).collect(Collectors.toSet())
         );
