@@ -13,11 +13,13 @@ import com.mvo.edublockapi.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -44,13 +46,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<ResponseStudentDTO> getAll() {
+    public Page<ResponseStudentDTO> getAll(int page, int size) {
         log.info("Getting all students");
-        List<Student> students = studentRepository.findAll();
-        return students
-            .stream()
-            .map(studentMapper::toResponseGetStudentDTO)
-            .toList();
+        Pageable pageable = PageRequest.of(page, size);
+        return studentRepository.findAll(pageable)
+            .map(studentMapper::toResponseGetStudentDTO);
+
     }
 
     @Override
@@ -101,7 +102,6 @@ public class StudentServiceImpl implements StudentService {
         ResponseStudentDTO student = getById(id);
         log.info("Courses for student with id: {} successfully found", id);
         return student.courses();
-
     }
 
     private Student getStudent(Long id) {

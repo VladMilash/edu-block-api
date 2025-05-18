@@ -5,13 +5,13 @@ import com.mvo.edublockapi.dto.ResponseDepartmentDTO;
 import com.mvo.edublockapi.dto.requestdto.DepartmentTransientDTO;
 import com.mvo.edublockapi.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,8 +33,9 @@ public class DepartmentsRestControllerV1 {
     }
 
     @GetMapping
-    public List<ResponseDepartmentDTO> getAll() {
-        return service.getAll();
+    public Page<ResponseDepartmentDTO> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "20") int size) {
+        return service.getAll(page, size);
     }
 
     @GetMapping("{id}")

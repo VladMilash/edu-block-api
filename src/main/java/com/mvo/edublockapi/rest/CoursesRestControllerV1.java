@@ -5,13 +5,13 @@ import com.mvo.edublockapi.dto.ResponseCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,8 +33,9 @@ public class CoursesRestControllerV1 {
     }
 
     @GetMapping
-    public List<ResponseCoursesDTO> getAll() {
-        return courseService.getAll();
+    public Page<ResponseCoursesDTO> getAll(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "20") int size) {
+        return courseService.getAll(page, size);
     }
 
     @GetMapping("{id}")

@@ -6,12 +6,13 @@ import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.entity.Teacher;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface CourseService {
     ResponseCoursesDTO save(CourseTransientDTO courseTransientDTO);
-    List<ResponseCoursesDTO> getAll();
+    Page<ResponseCoursesDTO> getAll(int page, int size);
     ResponseCoursesDTO getById(Long id);
     ResponseCoursesDTO update(Long id, CourseTransientDTO courseTransientDTO);
     DeleteResponseDTO delete(Long id);

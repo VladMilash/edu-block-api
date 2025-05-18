@@ -13,10 +13,11 @@ import com.mvo.edublockapi.service.TeacherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -43,12 +44,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<ResponseDepartmentDTO> getAll() {
+    public Page<ResponseDepartmentDTO> getAll(int page, int size) {
         log.info("Getting all department");
-        return departmentRepository.findAll()
-            .stream()
-            .map(departmentMapper::toResponseGetDepartmentDTO)
-            .toList();
+        Pageable pageable = PageRequest.of(page, size);
+        return departmentRepository.findAll(pageable)
+            .map(departmentMapper::toResponseGetDepartmentDTO);
     }
 
     @Override

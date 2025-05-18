@@ -14,11 +14,13 @@ import com.mvo.edublockapi.service.TeacherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -47,13 +49,11 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<ResponseTeacherDTO> getAll() {
+    public Page<ResponseTeacherDTO> getAll(int page, int size) {
         log.info("Getting all teachers");
-        List<Teacher> teachers = teacherRepository.findAll();
-        return teachers
-            .stream()
-            .map(teacherMapper::toResponseGetTeacherDTO)
-            .toList();
+        Pageable pageable = PageRequest.of(page, size);
+        return teacherRepository.findAll(pageable)
+            .map(teacherMapper::toResponseGetTeacherDTO);
     }
 
     @Override

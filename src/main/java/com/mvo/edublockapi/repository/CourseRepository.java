@@ -1,7 +1,8 @@
 package com.mvo.edublockapi.repository;
 
 import com.mvo.edublockapi.entity.Course;
-import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         LEFT JOIN FETCH d.headOfDepartment h     
         LEFT JOIN FETCH c.students s                     
         """)
-    List<Course> findAll();
+    Page<Course> findAll(Pageable pageable);
 
     @Query("""
         SELECT DISTINCT c FROM Course c

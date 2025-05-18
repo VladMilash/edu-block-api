@@ -1,11 +1,12 @@
 package com.mvo.edublockapi.repository;
 
 import com.mvo.edublockapi.entity.Teacher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +29,5 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
         LEFT JOIN FETCH c_t.department                
         LEFT JOIN FETCH t.department                 
         """)
-    List<Teacher> findAll();
+    Page<Teacher> findAll(Pageable pageable);
 }
