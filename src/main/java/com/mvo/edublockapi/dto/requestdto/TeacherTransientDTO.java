@@ -1,4 +1,8 @@
 package com.mvo.edublockapi.dto.requestdto;
 
-public record TeacherTransientDTO(String name) {
+import jakarta.validation.constraints.NotBlank;
+
+public record TeacherTransientDTO
+    (@NotBlank
+     String name) {
 }

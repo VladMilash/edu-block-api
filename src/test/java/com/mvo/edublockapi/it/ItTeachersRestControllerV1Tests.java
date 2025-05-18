@@ -40,7 +40,6 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
 
     private TeacherTransientDTO teacherTransientDTO;
 
-
     @BeforeEach
     void setUp() {
         teacherTransientDTO = new TeacherTransientDTO("test");

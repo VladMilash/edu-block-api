@@ -11,6 +11,7 @@ import com.mvo.edublockapi.mapper.TeacherMapper;
 import com.mvo.edublockapi.repository.TeacherRepository;
 import com.mvo.edublockapi.service.CourseService;
 import com.mvo.edublockapi.service.TeacherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,12 @@ public class TeacherServiceImpl implements TeacherService {
     private final CourseService courseService;
 
     @Override
-    public ResponseTeacherDTO save(TeacherTransientDTO teacherTransientDTO) {
+    public ResponseTeacherDTO save(@Valid TeacherTransientDTO teacherTransientDTO) {
         log.info("Creating teacher with name: {}", teacherTransientDTO.name());
         Teacher transientTeacher = teacherMapper.fromTeacherTransientDTO(teacherTransientDTO);
+        transientTeacher.setCourses(new HashSet<>());
         Teacher persistTeacher = teacherRepository.save(transientTeacher);
         log.info("Teacher successfully created with id: {}", persistTeacher.getId());
-        persistTeacher.setCourses(new HashSet<>());
         return teacherMapper.toResponseGetTeacherDTO(persistTeacher);
     }
 
@@ -56,7 +57,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public ResponseTeacherDTO update(Long id, TeacherTransientDTO teacherTransientDTO) {
+    public ResponseTeacherDTO update(Long id, @Valid TeacherTransientDTO teacherTransientDTO) {
         log.info("Getting teacher by id: {} for update", id);
         Teacher teacher = getTeacher(id);
         log.info("Updating teacher with id: {}", id);
@@ -82,13 +83,12 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher teacher = getTeacher(teacherId);
         Course course = courseService.getCourseById(courseId);
         teacher.getCourses().add(course);
-        return courseService.setRelationWithTeacher(courseId, teacher);
-
+        return courseService.setRelationWithTeacher(course, teacher);
     }
 
     @Override
     public Teacher getTeacher(Long id) {
-        log.info("Started found for teacher with id: {}", id);
+        log.info("Searching for teacher with id: {}", id);
         return teacherRepository.findTeacherById(id)
             .orElseThrow(() -> {
                 log.error("Teacher with id {} not found", id);

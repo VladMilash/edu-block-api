@@ -10,6 +10,7 @@ import com.mvo.edublockapi.mapper.DepartmentMapper;
 import com.mvo.edublockapi.repository.DepartmentRepository;
 import com.mvo.edublockapi.service.DepartmentService;
 import com.mvo.edublockapi.service.TeacherService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final TeacherService teacherService;
 
     @Override
-    public ResponseDepartmentDTO save(DepartmentTransientDTO departmentTransientDTO) {
+    public ResponseDepartmentDTO save(@Valid DepartmentTransientDTO departmentTransientDTO) {
         log.info("Creating department with name: {}", departmentTransientDTO.name());
         Department transientDepartment = departmentMapper.fromDepartmentTransientDTO(departmentTransientDTO);
         Department persistDepartment = departmentRepository.save(transientDepartment);
@@ -61,7 +62,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
     @Override
-    public ResponseDepartmentDTO update(Long id, DepartmentTransientDTO departmentTransientDTO) {
+    public ResponseDepartmentDTO update(Long id, @Valid DepartmentTransientDTO departmentTransientDTO) {
         log.info("Getting department by id: {} for update", id);
         Department department = getDepartmentById(id);
         log.info("Updating department with id: {}", id);
@@ -85,7 +86,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     private Department getDepartmentById(Long id) {
-        log.info("Started found fo department with id: {}", id);
+        log.info("Searching for department with id: {}", id);
         return departmentRepository.findById(id)
             .orElseThrow(() -> {
                 log.error("Department with id {} not found", id);

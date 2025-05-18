@@ -10,6 +10,7 @@ import com.mvo.edublockapi.exception.NotFoundEntityException;
 import com.mvo.edublockapi.mapper.CourseMapper;
 import com.mvo.edublockapi.repository.CourseRepository;
 import com.mvo.edublockapi.service.CourseService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,12 @@ public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
 
     @Override
-    public ResponseCoursesDTO save(CourseTransientDTO courseTransientDTO) {
+    public ResponseCoursesDTO save(@Valid CourseTransientDTO courseTransientDTO) {
         log.info("Creating course with title: {}", courseTransientDTO.title());
         Course transientCourse = courseMapper.fromCourseTransientDTO(courseTransientDTO);
+        transientCourse.setStudents(new HashSet<>());
         Course persistCourse = courseRepository.save(transientCourse);
         log.info("Course successfully created with id: {}", persistCourse.getId());
-        persistCourse.setStudents(new HashSet<>());
         return courseMapper.toResponseGetCourses(persistCourse);
     }
 
@@ -53,7 +54,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public ResponseCoursesDTO update(Long id, CourseTransientDTO courseTransientDTO) {
+    public ResponseCoursesDTO update(Long id, @Valid CourseTransientDTO courseTransientDTO) {
         log.info("Getting course by id: {} for update", id);
         Course course = getCourseById(id);
         log.info("Updating course with id: {}", id);
@@ -74,7 +75,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course getCourseById(Long id) {
-        log.info("Started found for course with id: {}", id);
+        log.info("Searching for course with id: {}", id);
         return courseRepository.findById(id)
             .orElseThrow(() -> {
                 log.error("Course with id {} not found", id);
@@ -84,20 +85,18 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public void setRelationWithStudent(Long courseId , Student student) {
-        Course course = getCourseById(courseId);
+    public void setRelationWithStudent(Course course, Student student) {
         course.getStudents().add(student);
         courseRepository.save(course);
-        log.info("Finished setting relation for course with id: {} and student with id: {}", courseId, student.getId());
+        log.info("Finished setting relation for course with id: {} and student with id: {}", course.getId(), student.getId());
     }
 
     @Transactional
     @Override
-    public ResponseCoursesDTO setRelationWithTeacher(Long courseId, Teacher teacher) {
-        Course course = getCourseById(courseId);
+    public ResponseCoursesDTO setRelationWithTeacher(Course course, Teacher teacher) {
         course.setTeacher(teacher);
-        Course uodatedCourse = courseRepository.save(course);
-        log.info("Finished setting relation for course with id: {} and teacher with id: {}", courseId, teacher.getId());
-        return courseMapper.toResponseGetCourses(uodatedCourse);
+        Course updatedCourse = courseRepository.save(course);
+        log.info("Finished setting relation for course with id: {} and teacher with id: {}", course.getId(), teacher.getId());
+        return courseMapper.toResponseGetCourses(updatedCourse);
     }
 }

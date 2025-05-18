@@ -10,6 +10,7 @@ import com.mvo.edublockapi.mapper.StudentMapper;
 import com.mvo.edublockapi.repository.StudentRepository;
 import com.mvo.edublockapi.service.CourseService;
 import com.mvo.edublockapi.service.StudentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class StudentServiceImpl implements StudentService {
     private final CourseService courseService;
 
     @Override
-    public ResponseStudentDTO save(StudentTransientDTO studentTransientDTO) {
+    public ResponseStudentDTO save(@Valid StudentTransientDTO studentTransientDTO) {
         if (studentRepository.existsByEmail(studentTransientDTO.email())) {
             log.error("The email {} was used for registration earlier", studentTransientDTO.email());
             throw new AlReadyExistException("Student with email " + studentTransientDTO.email() + " already exist");
@@ -36,9 +37,9 @@ public class StudentServiceImpl implements StudentService {
         log.info("The email {} has not been used for registration before", studentTransientDTO.email());
         log.info("Creating student with name: {}, and email: {}", studentTransientDTO.name(), studentTransientDTO.email());
         Student transientStudent = studentMapper.fromStudentTransientDTO(studentTransientDTO);
+        transientStudent.setCourses(new HashSet<>());
         Student persistStudent = studentRepository.save(transientStudent);
         log.info("Student successfully created with id: {}", persistStudent.getId());
-        persistStudent.setCourses(new HashSet<>());
         return studentMapper.toResponseGetStudentDTO(persistStudent);
     }
 
@@ -61,7 +62,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseStudentDTO update(Long id, StudentTransientDTO studentTransientDTO) {
+    public ResponseStudentDTO update(Long id, @Valid StudentTransientDTO studentTransientDTO) {
         log.info("Getting student by id: {} for update", id);
         Student student = getStudent(id);
         log.info("Updating student with id: {}", id);
@@ -88,7 +89,7 @@ public class StudentServiceImpl implements StudentService {
         Student student = getStudent(studentId);
         Course course = courseService.getCourseById(courseId);
         student.getCourses().add(course);
-        courseService.setRelationWithStudent(courseId, student);
+        courseService.setRelationWithStudent(course, student);
         Student updatedStudent = studentRepository.save(student);
         log.info("Finished setting relation for student with id: {} and course with id: {}" ,student.getId(), courseId);
         return studentMapper.toResponseGetStudentDTO(updatedStudent);
@@ -104,7 +105,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private Student getStudent(Long id) {
-        log.info("Started found for student with id: {}", id);
+        log.info("Searching for student with id: {}", id);
         return studentRepository.findById(id)
             .orElseThrow(() -> {
                 log.error("Student with id {} not found", id);
