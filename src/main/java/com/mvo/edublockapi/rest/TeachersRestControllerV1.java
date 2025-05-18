@@ -6,8 +6,12 @@ import com.mvo.edublockapi.dto.ResponseTeacherDTO;
 import com.mvo.edublockapi.dto.requestdto.TeacherTransientDTO;
 import com.mvo.edublockapi.service.TeacherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -17,8 +21,16 @@ public class TeachersRestControllerV1 {
     private final TeacherService service;
 
     @PostMapping
-    public ResponseTeacherDTO save(@RequestBody TeacherTransientDTO teacherTransientDTO) {
-        return service.save(teacherTransientDTO);
+    public ResponseEntity<ResponseTeacherDTO> save(@Validated @RequestBody TeacherTransientDTO teacherTransientDTO,
+                                                   UriComponentsBuilder uriComponentsBuilder) {
+        ResponseTeacherDTO responseTeacherDTO = service.save(teacherTransientDTO);
+        URI location = uriComponentsBuilder
+            .path("api/v1/teachers/{id}")
+            .buildAndExpand(responseTeacherDTO.id())
+            .toUri();
+        return ResponseEntity
+            .created(location)
+            .body(responseTeacherDTO);
     }
 
     @GetMapping("{id}")
@@ -32,7 +44,7 @@ public class TeachersRestControllerV1 {
     }
 
     @PutMapping("{id}")
-    public ResponseTeacherDTO update(@PathVariable Long id, @RequestBody TeacherTransientDTO teacherTransientDTO) {
+    public ResponseTeacherDTO update(@PathVariable Long id, @Validated @RequestBody TeacherTransientDTO teacherTransientDTO) {
         return service.update(id,teacherTransientDTO);
     }
 

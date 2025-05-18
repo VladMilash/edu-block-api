@@ -60,7 +60,7 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
         //then
         result
             .andDo(MockMvcResultHandlers.print())
-            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.status().isCreated())
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
             .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("test"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("test@test.ru"))

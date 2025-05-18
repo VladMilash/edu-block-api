@@ -5,8 +5,12 @@ import com.mvo.edublockapi.dto.ResponseCoursesDTO;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,8 +20,16 @@ public class CoursesRestControllerV1 {
     private final CourseService courseService;
 
     @PostMapping
-    public ResponseCoursesDTO save(@RequestBody CourseTransientDTO courseTransientDTO) {
-        return courseService.save(courseTransientDTO);
+    public ResponseEntity<ResponseCoursesDTO> save(@Validated @RequestBody CourseTransientDTO courseTransientDTO,
+                                                   UriComponentsBuilder uriComponentsBuilder) {
+        ResponseCoursesDTO responseCoursesDTO = courseService.save(courseTransientDTO);
+        URI location = uriComponentsBuilder
+            .path("api/v1/courses/{id}")
+            .buildAndExpand(responseCoursesDTO.id())
+            .toUri();
+        return ResponseEntity
+            .created(location)
+            .body(responseCoursesDTO);
     }
 
     @GetMapping
@@ -31,7 +43,7 @@ public class CoursesRestControllerV1 {
     }
 
     @PutMapping("{id}")
-    public ResponseCoursesDTO update(@PathVariable Long id, @RequestBody CourseTransientDTO courseTransientDTO) {
+    public ResponseCoursesDTO update(@PathVariable Long id, @Validated @RequestBody CourseTransientDTO courseTransientDTO) {
         return courseService.update(id, courseTransientDTO);
     }
 
