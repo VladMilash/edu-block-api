@@ -38,7 +38,8 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
 
-
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+    
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.postgresql:postgresql:42.7.5")
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
@@ -55,7 +56,6 @@ dependencies {
     if (project.hasProperty("jetty")) {
         implementation("org.springframework.boot:spring-boot-starter-jetty:3.4.4")
     }
-
 
     tasks.withType<Test> {
         useJUnitPlatform()
