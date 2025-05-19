@@ -9,8 +9,6 @@ import com.mvo.edublockapi.entity.Department;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.entity.Teacher;
 
-import java.util.HashSet;
-
 public class DataUtil {
     public static Course getCourseEntity() {
         Course course = new Course();
