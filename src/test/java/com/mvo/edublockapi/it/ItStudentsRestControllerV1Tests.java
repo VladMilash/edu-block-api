@@ -6,6 +6,7 @@ import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Student;
 import com.mvo.edublockapi.repository.CourseRepository;
 import com.mvo.edublockapi.repository.StudentRepository;
+import com.mvo.edublockapi.util.DataUtil;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,9 +42,15 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
 
     private StudentTransientDTO studentTransientDTO;
 
+    private Student student;
+
+    private Course course;
+
     @BeforeEach
     void setUp() {
-        studentTransientDTO = new StudentTransientDTO("test", "test@test.ru");
+        studentTransientDTO = DataUtil.getStudentTransientDTO();
+        student = DataUtil.getStudentEntity();
+        course = DataUtil.getCourseEntity();
         studentRepository.deleteAll();
     }
 
@@ -72,8 +79,6 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     public void givenStudentTransientDTOWithDuplicateEmail_whenSaveStudent_thenErrorResponse() throws Exception {
         //given
         String duplicateEmail = "duplicate@mail.com";
-        Student student = new Student();
-        student.setName("test");
         student.setEmail(duplicateEmail);
         studentRepository.save(student);
         StudentTransientDTO studentTransientDTOWithDuplicateEmail = new StudentTransientDTO("new", duplicateEmail);
@@ -96,9 +101,6 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Test get student by id functionality")
     public void givenStudentId_whenGetStudent_thenSuccessResponse() throws Exception {
         //given
-        Student student = new Student();
-        student.setName("test");
-        student.setEmail("test@test.ru");
         studentRepository.save(student);
 
         //when
@@ -135,10 +137,7 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @Test
     @DisplayName("Test get all students functionality")
     public void givenGetStudentsRequest_whenGetStudents_thenNonEmptyList() throws Exception {
-        //given
-        Student student = new Student();
-        student.setName("new");
-        student.setEmail("new@new.ru");
+        //given;
         studentRepository.save(student);
 
         //when
@@ -157,7 +156,6 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Update student by id functionality")
     public void givenStudentId_whenUpdateStudent_thenSuccessResponse() throws Exception {
         //given
-        Student student = new Student();
         student.setName("new");
         student.setEmail("new@new.ru");
         studentRepository.save(student);
@@ -199,9 +197,6 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Delete student by id functionality")
     public void givenStudentId_whenDeleteStudent_thenDeletedResponse() throws Exception {
         //given
-        Student student = new Student();
-        student.setName("new");
-        student.setEmail("new@new.ru");
         studentRepository.save(student);
 
         //when
@@ -212,7 +207,7 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
         result
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.massage", CoreMatchers.is("Student deleted successfully")));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Student deleted successfully")));
     }
 
     @Test
@@ -236,14 +231,8 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Test get student courses functionality")
     public void givenStudentId_whenGetStudentCourses_thenSuccessResponse() throws Exception {
         //given
-        Student student = new Student();
-        student.setName("test");
-        student.setEmail("test@test.ru");
         student.setCourses(new HashSet<>());
         studentRepository.save(student);
-        Course course = new Course();
-        course.setTitle("course");
-        course.setStudents(new HashSet<>());
         courseRepository.save(course);
         student.getCourses().add(course);
         course.getStudents().add(student);
@@ -261,7 +250,7 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(course.getId()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("course"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("New"))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].teacher").isEmpty());
     }
 
@@ -269,12 +258,7 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Set relation student-course functionality")
     public void givenStudentIdAndCourseId_whenSetRelationWithCourse_thenSuccessResponse() throws Exception {
         //given
-        Student student = new Student();
-        student.setName("test");
-        student.setEmail("test@test.ru");
         studentRepository.save(student);
-        Course course = new Course();
-        course.setTitle("course");
         courseRepository.save(course);
 
         //when
@@ -299,8 +283,6 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Set relation student-course with incorrect student id and correct course id functionality")
     public void givenIncorrectStudentIdAndCorrectCourseId_whenSetRelationWitStudentCourse_thenErrorResponse() throws Exception {
         //given
-        Course course = new Course();
-        course.setTitle("course");
         courseRepository.save(course);
 
         //when
@@ -320,9 +302,6 @@ public class ItStudentsRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Set relation student-course with correct student id and incorrect course id functionality")
     public void givenCorrectStudentIdAndIncorrectCourseId_whenSetRelationWitStudentCourse_thenErrorResponse() throws Exception {
         //given
-        Student student = new Student();
-        student.setName("test");
-        student.setEmail("test@test.ru");
         studentRepository.save(student);
 
         //when

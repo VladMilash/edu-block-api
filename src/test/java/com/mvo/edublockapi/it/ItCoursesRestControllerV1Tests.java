@@ -3,6 +3,7 @@ package com.mvo.edublockapi.it;
 import com.mvo.edublockapi.dto.requestdto.CourseTransientDTO;
 import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.repository.CourseRepository;
+import com.mvo.edublockapi.util.DataUtil;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,9 +37,12 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
 
     private CourseTransientDTO courseTransientDTO;
 
+    private Course course;
+
     @BeforeEach
     void setUp() {
-        courseTransientDTO = new CourseTransientDTO("test");
+        courseTransientDTO = DataUtil.getCourseTransientDTO();
+        course = DataUtil.getCourseEntity();
     }
 
     @Test
@@ -66,8 +70,6 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
     @DisplayName("Test get course by id functionality")
     public void givenCourseId_whenGetCourse_thenSuccessResponse() throws Exception {
         //given
-        Course course = new Course();
-        course.setTitle("Test");
         courseRepository.save(course);
 
         //when
@@ -122,8 +124,6 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
     @DisplayName("Update course by id functionality")
     public void givenCourseId_whenUpdateCourse_thenSuccessResponse() throws Exception {
         //given
-        Course course = new Course();
-        course.setTitle("New");
         courseRepository.save(course);
 
         //when
@@ -163,8 +163,6 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
     @DisplayName("Delete course by id functionality")
     public void givenCourseId_whenDeleteCourse_thenDeletedResponse() throws Exception {
         //given
-        Course course = new Course();
-        course.setTitle("New");
         courseRepository.save(course);
 
         //when
@@ -175,7 +173,7 @@ public class ItCoursesRestControllerV1Tests extends AbstractRestControllerBaseTe
         result
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.massage", CoreMatchers.is("Course deleted successfully")));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Course deleted successfully")));
     }
 
     @Test

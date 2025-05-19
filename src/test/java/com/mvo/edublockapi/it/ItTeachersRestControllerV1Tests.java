@@ -6,6 +6,7 @@ import com.mvo.edublockapi.entity.Course;
 import com.mvo.edublockapi.entity.Teacher;
 import com.mvo.edublockapi.repository.CourseRepository;
 import com.mvo.edublockapi.repository.TeacherRepository;
+import com.mvo.edublockapi.util.DataUtil;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,9 +41,15 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
 
     private TeacherTransientDTO teacherTransientDTO;
 
+    private Teacher teacher;
+
+    private Course course;
+
     @BeforeEach
     void setUp() {
-        teacherTransientDTO = new TeacherTransientDTO("test");
+        teacherTransientDTO = DataUtil.getTeacherTransientDTO();
+        teacher = DataUtil.getTeacherEntity();
+        course = DataUtil.getCourseEntity();
     }
 
     @Test
@@ -69,8 +76,6 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Test get teacher by id functionality")
     public void givenTeacherId_whenGetDepartment_thenSuccessResponse() throws Exception {
         //given
-        Teacher teacher = new Teacher();
-        teacher.setName("test");
         teacherRepository.save(teacher);
 
         //when
@@ -125,8 +130,6 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Update teacher by id functionality")
     public void givenDepartmentId_whenUpdateDepartment_thenSuccessResponse() throws Exception {
         //given
-        Teacher teacher = new Teacher();
-        teacher.setName("new");
         teacherRepository.save(teacher);
 
         //when
@@ -166,8 +169,6 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Delete teacher by id functionality")
     public void givenTeacherId_whenDeleteTeacher_thenDeletedResponse() throws Exception {
         //given
-        Teacher teacher = new Teacher();
-        teacher.setName("new");
         teacherRepository.save(teacher);
 
         //when
@@ -178,7 +179,7 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
         result
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.massage", CoreMatchers.is("Teacher deleted successfully")));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Teacher deleted successfully")));
     }
 
     @Test
@@ -202,12 +203,7 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Set relation teacher-course functionality")
     public void givenTeacherIdAndCourseId_whenSetRelationWitTeacherCourse_thenSuccessResponse() throws Exception {
         //given
-        Teacher teacher = new Teacher();
-        teacher.setName("test");
         teacherRepository.save(teacher);
-
-        Course course = new Course();
-        course.setTitle("test");
         courseRepository.save(course);
 
         //when
@@ -220,9 +216,9 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("test"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(course.getTitle()))
             .andExpect(MockMvcResultMatchers.jsonPath("$.teacher.id").isNotEmpty())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.teacher.name").value("test"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.teacher.name").value(teacher.getName()))
             .andExpect(MockMvcResultMatchers.jsonPath("$.students").isEmpty());
     }
 
@@ -230,8 +226,6 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Set relation teacher-course with incorrect teacher id and correct course id functionality")
     public void givenIncorrectTeacherIdAndCorrectCourseId_whenSetRelationWitTeacherCourse_thenErrorResponse() throws Exception {
         //given
-        Course course = new Course();
-        course.setTitle("test");
         courseRepository.save(course);
 
         //when
@@ -251,8 +245,6 @@ public class ItTeachersRestControllerV1Tests extends AbstractRestControllerBaseT
     @DisplayName("Set relation teacher-course with correct teacher id and incorrect course id functionality")
     public void givenCorrectTeacherIdAndIncorrectCourseId_whenSetRelationWitTeacherCourse_thenErrorResponse() throws Exception {
         //given
-        Teacher teacher = new Teacher();
-        teacher.setName("test");
         teacherRepository.save(teacher);
 
         //when

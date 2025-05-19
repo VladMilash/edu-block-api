@@ -6,6 +6,7 @@ import com.mvo.edublockapi.entity.Department;
 import com.mvo.edublockapi.entity.Teacher;
 import com.mvo.edublockapi.repository.DepartmentRepository;
 import com.mvo.edublockapi.repository.TeacherRepository;
+import com.mvo.edublockapi.util.DataUtil;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.Matchers.nullValue;
@@ -41,9 +41,15 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
 
     private DepartmentTransientDTO departmentTransientDTO;
 
+    private Department department;
+
+    private Teacher teacher;
+
     @BeforeEach
     void setUp() {
-        departmentTransientDTO = new DepartmentTransientDTO("test");
+        departmentTransientDTO = DataUtil.getDepartmentTransientDTO();
+        department = DataUtil.getDepartmentEntity();
+        teacher = DataUtil.getTeacherEntity();
     }
 
     @Test
@@ -69,8 +75,6 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
     @DisplayName("Test get department by id functionality")
     public void givenDepartmentId_whenGetDepartment_thenSuccessResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("test");
         departmentRepository.save(department);
 
         //when
@@ -124,8 +128,6 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
     @DisplayName("Update department by id functionality")
     public void givenDepartmentId_whenUpdateDepartment_thenSuccessResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("new");
         departmentRepository.save(department);
 
         //when
@@ -164,8 +166,6 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
     @DisplayName("Delete department by id functionality")
     public void givenDepartmentId_whenDeleteDepartment_thenDeletedResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("new");
         departmentRepository.save(department);
 
         //when
@@ -176,7 +176,7 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
         result
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.massage", CoreMatchers.is("Department deleted successfully")));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is("Department deleted successfully")));
     }
 
     @Test
@@ -200,12 +200,7 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
     @DisplayName("Set relation department-teacher functionality")
     public void givenDepartmentIdAndTeacherId_whenSetRelationWitTeacherDepartment_thenSuccessResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("test");
         departmentRepository.save(department);
-
-        Teacher teacher = new Teacher();
-        teacher.setName("test");
         teacherRepository.save(teacher);
 
         //when
@@ -227,8 +222,6 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
     @DisplayName("Set relation department-teacher with incorrect department id and correct teacher id functionality")
     public void givenIncorrectDepartmentIdAndCorrectTeacherId_whenSetRelationWitTeacherDepartment_thenErrorResponse() throws Exception {
         //given
-        Teacher teacher = new Teacher();
-        teacher.setName("test");
         teacherRepository.save(teacher);
 
         //when
@@ -248,8 +241,6 @@ public class ItDepartmentsRestControllerV1Tests extends AbstractRestControllerBa
     @DisplayName("Set relation department-teacher with correct department id and incorrect teacher id functionality")
     public void givenCorrectDepartmentIdIncorrectAndTeacherId_whenSetRelationWitTeacherDepartment_thenErrorResponse() throws Exception {
         //given
-        Department department = new Department();
-        department.setName("test");
         departmentRepository.save(department);
 
         //when
